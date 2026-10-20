@@ -1,0 +1,2233 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`static background (reduced motion on) clear (day: false) matches its snapshot 1`] = `
+<View
+  nativeID="clear-night"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#1F1550",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4280227152,
+            4281999237,
+            4285214632,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) clear (day: true) matches its snapshot 1`] = `
+<View
+  nativeID="clear-day"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#FFD84A",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4294957130,
+            4294946370,
+            4294937179,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) cloudy (day: false) matches its snapshot 1`] = `
+<View
+  nativeID="cloudy-night"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#2B2C62",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4281019490,
+            4282794621,
+            4284897938,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) cloudy (day: true) matches its snapshot 1`] = `
+<View
+  nativeID="cloudy-day"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#A6B8F0",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4289116400,
+            4291212522,
+            4294100186,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) drizzle (day: false) matches its snapshot 1`] = `
+<View
+  nativeID="drizzle-night"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#1C2160",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4280033632,
+            4281280128,
+            4283050643,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) drizzle (day: true) matches its snapshot 1`] = `
+<View
+  nativeID="drizzle-day"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#5E9BFF",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4284390399,
+            4286548991,
+            4289298418,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) dust-smoke (day: false) matches its snapshot 1`] = `
+<View
+  nativeID="dust-smoke-night"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#3B2352",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4282065746,
+            4284100190,
+            4286200412,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) dust-smoke (day: true) matches its snapshot 1`] = `
+<View
+  nativeID="dust-smoke-day"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#FFC37A",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4294951802,
+            4294944110,
+            4294085242,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) mist-fog (day: false) matches its snapshot 1`] = `
+<View
+  nativeID="mist-fog-night"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#34325E",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4281610846,
+            4283123061,
+            4284963977,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) mist-fog (day: true) matches its snapshot 1`] = `
+<View
+  nativeID="mist-fog-day"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#CFC9EE",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4291807726,
+            4293316074,
+            4294498770,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) partly-cloudy (day: false) matches its snapshot 1`] = `
+<View
+  nativeID="partly-cloudy-night"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#242A6B",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4280560235,
+            4283054738,
+            4286205094,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) partly-cloudy (day: true) matches its snapshot 1`] = `
+<View
+  nativeID="partly-cloudy-day"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#7DD3FF",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4286436351,
+            4289247743,
+            4294951840,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) rain (day: false) matches its snapshot 1`] = `
+<View
+  nativeID="rain-night"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#151A55",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4279573077,
+            4280949875,
+            4282719878,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) rain (day: true) matches its snapshot 1`] = `
+<View
+  nativeID="rain-day"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#3445C7",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4281615815,
+            4284104644,
+            4287250367,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) sleet (day: false) matches its snapshot 1`] = `
+<View
+  nativeID="sleet-night"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#232A63",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4280494691,
+            4282136695,
+            4284107660,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) sleet (day: true) matches its snapshot 1`] = `
+<View
+  nativeID="sleet-day"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#9AB8E8",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4288329960,
+            4290360038,
+            4292919008,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) snow (day: false) matches its snapshot 1`] = `
+<View
+  nativeID="snow-night"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#2A3B9C",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4280957852,
+            4283126976,
+            4284895936,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) snow (day: true) matches its snapshot 1`] = `
+<View
+  nativeID="snow-day"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#A5E3FF",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4289061887,
+            4291808255,
+            4294956018,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) squall-tornado (day: false) matches its snapshot 1`] = `
+<View
+  nativeID="squall-tornado-night"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#0B1F25",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4278918949,
+            4279515195,
+            4280241994,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) squall-tornado (day: true) matches its snapshot 1`] = `
+<View
+  nativeID="squall-tornado-day"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#1F4A45",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4280240709,
+            4280966999,
+            4281693287,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) thunderstorm (day: false) matches its snapshot 1`] = `
+<View
+  nativeID="thunderstorm-night"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#12082E",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4279371822,
+            4280946526,
+            4283044480,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) thunderstorm (day: true) matches its snapshot 1`] = `
+<View
+  nativeID="thunderstorm-day"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#2A1A73",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4280949363,
+            4283375510,
+            4287242152,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) unknown (day: false) matches its snapshot 1`] = `
+<View
+  nativeID="unknown-night"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#2A2B63",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4280953699,
+            4282399866,
+            4284239760,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
+
+exports[`static background (reduced motion on) unknown (day: true) matches its snapshot 1`] = `
+<View
+  nativeID="unknown-day"
+  style={
+    [
+      {
+        "flex": 1,
+      },
+      {
+        "backgroundColor": "#B7BEF2",
+      },
+    ]
+  }
+  testID="condition-background"
+>
+  <View
+    accessibilityElementsHidden={true}
+    importantForAccessibility="no-hide-descendants"
+    pointerEvents="none"
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+    testID="condition-background-art"
+  >
+    <View
+      collapsable={false}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+        ]
+      }
+      style={
+        [
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          {
+            "opacity": 1,
+          },
+        ]
+      }
+    >
+      <ViewManagerAdapter_ExpoLinearGradient
+        colors={
+          [
+            4290232050,
+            4292002800,
+            4293971940,
+          ]
+        }
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          }
+        }
+      />
+    </View>
+  </View>
+</View>
+`;
