@@ -1,0 +1,24 @@
+# User Story 4: units and appearance, applied everywhere and remembered.
+# Run against a fake-provider build (npm run start:fake) with the simulator location near Paris.
+appId: com.w34th3r.app
+---
+- setLocation:
+    latitude: 48.8566
+    longitude: 2.3522
+- launchApp:
+    clearState: true
+    permissions:
+      location: allow
+- assertVisible: '21°'
+- tapOn: 'Settings'
+- tapOn: 'Fahrenheit'
+- tapOn: 'Dark'
+- tapOn: 'Back'
+# 21 degrees Celsius is 71 degrees Fahrenheit.
+- assertVisible: '71°'
+# Restart: the choices must be remembered.
+- launchApp
+- assertVisible: '71°'
+- tapOn: 'Settings'
+- assertVisible:
+    text: 'Fahrenheit'
