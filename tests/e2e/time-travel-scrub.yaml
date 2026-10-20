@@ -1,0 +1,24 @@
+# Time-travel scrub bar: drag through the hours of the day and come back to now.
+# Run against a fake-provider build (npm run start:fake) with the simulator location near Paris.
+appId: com.w34th3r.app
+---
+- setLocation:
+    latitude: 48.8566
+    longitude: 2.3522
+- launchApp:
+    clearState: true
+    permissions:
+      location: allow
+- assertVisible: 'Time of day'
+- assertVisible: 'Feels like.*'
+# Drag from the left of the bar to the right: the moment changes and "Feels like" goes away.
+- swipe:
+    start: '15%, 92%'
+    end: '85%, 92%'
+    duration: 600
+- assertVisible: 'Back to now'
+- assertNotVisible: 'Feels like.*'
+# Return to the live conditions.
+- tapOn: 'Back to now'
+- assertNotVisible: 'Back to now'
+- assertVisible: 'Feels like.*'
