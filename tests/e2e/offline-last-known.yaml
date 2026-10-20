@@ -1,0 +1,22 @@
+# Offline behaviour: after weather has loaded once, a failed refresh keeps the last-known weather
+# on screen, marked with its age, and explains the problem.
+# Run against a fake-provider build (npm run start:fake) with the simulator location near Paris.
+# `w34th3r://dev/scenario?name=offline` switches the fake provider to its "offline" scenario.
+appId: com.w34th3r.app
+---
+- setLocation:
+    latitude: 48.8566
+    longitude: 2.3522
+- launchApp:
+    clearState: true
+    permissions:
+      location: allow
+- assertVisible: 'Clear sky'
+- openLink: 'w34th3r://dev/scenario?name=offline'
+- swipe:
+    direction: DOWN
+    duration: 600
+- assertVisible: "You're offline"
+- assertVisible: 'Updated.*'
+# The last-known weather is still there.
+- assertVisible: 'Clear sky'
