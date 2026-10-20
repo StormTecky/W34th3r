@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "W34th3r",
+    "slug": "w34th3r",
+    "scheme": "w34th3r",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.w34th3r.app"
+    },
+    "android": {
+      "package": "com.w34th3r.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "permissions": ["android.permission.ACCESS_COARSE_LOCATION"],
+      "blockedPermissions": ["android.permission.ACCESS_FINE_LOCATION"],
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "W34th3r uses your location only to show the weather where you are."
+        }
+      ],
+      "expo-localization",
+      "expo-font"
+    ]
+  }
+}
