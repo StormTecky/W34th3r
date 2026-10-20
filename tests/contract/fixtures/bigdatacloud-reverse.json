@@ -1,0 +1,103 @@
+{
+  "latitude": 39.8,
+  "lookupSource": "coordinates",
+  "longitude": -89.64,
+  "localityLanguageRequested": "en",
+  "continent": "North America",
+  "continentCode": "NA",
+  "countryName": "United States of America",
+  "countryCode": "US",
+  "principalSubdivision": "Illinois",
+  "principalSubdivisionCode": "US-IL",
+  "city": "Springfield",
+  "locality": "Springfield",
+  "postcode": "62703",
+  "plusCode": "86FGR926+22",
+  "fips": {
+    "state": "17",
+    "county": "167",
+    "countySubdivision": "11046",
+    "place": "72000"
+  },
+  "localityInfo": {
+    "administrative": [
+      {
+        "name": "United States of America",
+        "description": "country in North America",
+        "isoName": "United States of America",
+        "order": 2,
+        "adminLevel": 2,
+        "isoCode": "US",
+        "wikidataId": "Q30",
+        "geonameId": 6252001
+      },
+      {
+        "name": "Illinois",
+        "description": "state of the United States of America",
+        "isoName": "Illinois",
+        "order": 6,
+        "adminLevel": 4,
+        "isoCode": "US-IL",
+        "wikidataId": "Q1204",
+        "geonameId": 4896861
+      },
+      {
+        "name": "Sangamon County",
+        "description": "county in Illinois, United States",
+        "order": 7,
+        "adminLevel": 6,
+        "wikidataId": "Q490994",
+        "geonameId": 4249472
+      },
+      {
+        "name": "Springfield",
+        "description": "capital city of the U.S. state of Illinois and county seat of Sangamon County",
+        "order": 10,
+        "adminLevel": 8,
+        "wikidataId": "Q28515",
+        "geonameId": 4250542
+      }
+    ],
+    "informative": [
+      {
+        "name": "North America",
+        "description": "continent in the Americas",
+        "isoName": "North America",
+        "order": 1,
+        "isoCode": "NA",
+        "wikidataId": "Q49",
+        "geonameId": 6255149
+      },
+      {
+        "name": "contiguous United States",
+        "description": "the 48 states of the United States (all but Alaska and Hawaii) and the District of Columbia",
+        "order": 3,
+        "wikidataId": "Q578170"
+      },
+      {
+        "name": "America/Chicago",
+        "description": "time zone",
+        "order": 4
+      },
+      {
+        "name": "Central Lowlands",
+        "order": 5
+      },
+      {
+        "name": "17-72000",
+        "description": "FIPS code",
+        "order": 8
+      },
+      {
+        "name": "17-167-11046",
+        "description": "FIPS code",
+        "order": 9
+      },
+      {
+        "name": "62703",
+        "description": "postal code",
+        "order": 11
+      }
+    ]
+  }
+}

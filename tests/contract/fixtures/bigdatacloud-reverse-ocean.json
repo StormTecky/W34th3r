@@ -1,0 +1,49 @@
+{
+  "latitude": -60.0,
+  "lookupSource": "coordinates",
+  "longitude": 0.0,
+  "localityLanguageRequested": "en",
+  "continent": "",
+  "continentCode": "",
+  "countryName": "Antarctica",
+  "countryCode": "AQ",
+  "principalSubdivision": "",
+  "principalSubdivisionCode": "",
+  "city": "",
+  "locality": "Queen Maud Land",
+  "postcode": "",
+  "plusCode": "3FG22222+22",
+  "localityInfo": {
+    "administrative": [],
+    "informative": [
+      {
+        "name": "Antarctica",
+        "description": "terrestrial continent in the Southern Hemisphere",
+        "isoName": "Antarctica",
+        "order": 1,
+        "isoCode": "AQ",
+        "wikidataId": "Q51",
+        "geonameId": 6255152
+      },
+      {
+        "name": "Atlantic Ocean",
+        "description": "southern area of the Atlantic ocean",
+        "order": 2,
+        "wikidataId": "Q1482804",
+        "geonameId": 3358844
+      },
+      {
+        "name": "Queen Maud Land",
+        "description": "Norway's territorial claim in Antarctica",
+        "order": 3,
+        "wikidataId": "Q189999",
+        "geonameId": 6623778
+      },
+      {
+        "name": "Etc/GMT",
+        "description": "time zone",
+        "order": 4
+      }
+    ]
+  }
+}
