@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Springfield",
+    "local_names": { "en": "Springfield" },
+    "lat": 39.7990175,
+    "lon": -89.6439575,
+    "country": "US",
+    "state": "Illinois"
+  },
+  {
+    "name": "Springfield",
+    "lat": 42.1018764,
+    "lon": -72.5886727,
+    "country": "US",
+    "state": "Massachusetts"
+  },
+  {
+    "name": "Springfield",
+    "lat": 37.2089572,
+    "lon": -93.2922989,
+    "country": "US",
+    "state": "Missouri"
+  },
+  {
+    "name": "Springfield",
+    "lat": -26.0,
+    "lon": 28.4,
+    "country": "ZA"
+  },
+  {
+    "name": "Москва",
+    "local_names": { "ru": "Москва", "en": "Moscow" },
+    "lat": 55.7504461,
+    "lon": 37.6174943,
+    "country": "RU",
+    "state": "Moscow"
+  }
+]
