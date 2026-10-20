@@ -1,0 +1,23 @@
+# User Story 1: current conditions at a glance.
+# Run against a build with EXPO_PUBLIC_USE_FAKE_PROVIDER=1 (see `npm run start:fake`), so the
+# weather is deterministic ("Clear sky"). The simulator location is set near Paris.
+appId: com.w34th3r.app
+---
+- setLocation:
+    latitude: 48.8566
+    longitude: 2.3522
+- launchApp:
+    clearState: true
+    permissions:
+      location: allow
+- assertVisible: 'Paris'
+- assertVisible: 'Clear sky'
+- assertVisible:
+    text: 'Feels like.*'
+- assertVisible:
+    text: 'H:.*L:.*'
+# Pull to refresh; the content must still be there afterwards.
+- swipe:
+    direction: DOWN
+    duration: 600
+- assertVisible: 'Clear sky'
