@@ -1,0 +1,206 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`RangeBar renders a typical day 1`] = `
+<View
+  accessibilityElementsHidden={true}
+  importantForAccessibility="no-hide-descendants"
+  style={
+    [
+      {
+        "borderRadius": 999,
+        "flex": 1,
+        "height": 8,
+        "overflow": "hidden",
+      },
+      {
+        "backgroundColor": "#d5dde8",
+      },
+    ]
+  }
+  testID="range-bar"
+>
+  <View
+    style={
+      [
+        {
+          "borderRadius": 999,
+          "bottom": 0,
+          "overflow": "hidden",
+          "position": "absolute",
+          "top": 0,
+        },
+        {
+          "backgroundColor": "#1259c7",
+          "left": "20%",
+          "width": "60.00000000000001%",
+        },
+      ]
+    }
+    testID="range-bar-fill"
+  />
+</View>
+`;
+
+exports[`RangeBar renders equal highs and lows 1`] = `
+<View
+  accessibilityElementsHidden={true}
+  importantForAccessibility="no-hide-descendants"
+  style={
+    [
+      {
+        "borderRadius": 999,
+        "flex": 1,
+        "height": 8,
+        "overflow": "hidden",
+      },
+      {
+        "backgroundColor": "#d5dde8",
+      },
+    ]
+  }
+  testID="range-bar"
+>
+  <View
+    style={
+      [
+        {
+          "borderRadius": 999,
+          "bottom": 0,
+          "overflow": "hidden",
+          "position": "absolute",
+          "top": 0,
+        },
+        {
+          "backgroundColor": "#1259c7",
+          "left": "50%",
+          "width": "8%",
+        },
+      ]
+    }
+    testID="range-bar-fill"
+  />
+</View>
+`;
+
+exports[`RangeBar renders the coldest day of the week 1`] = `
+<View
+  accessibilityElementsHidden={true}
+  importantForAccessibility="no-hide-descendants"
+  style={
+    [
+      {
+        "borderRadius": 999,
+        "flex": 1,
+        "height": 8,
+        "overflow": "hidden",
+      },
+      {
+        "backgroundColor": "#d5dde8",
+      },
+    ]
+  }
+  testID="range-bar"
+>
+  <View
+    style={
+      [
+        {
+          "borderRadius": 999,
+          "bottom": 0,
+          "overflow": "hidden",
+          "position": "absolute",
+          "top": 0,
+        },
+        {
+          "backgroundColor": "#1259c7",
+          "left": "0%",
+          "width": "40%",
+        },
+      ]
+    }
+    testID="range-bar-fill"
+  />
+</View>
+`;
+
+exports[`RangeBar renders the full range 1`] = `
+<View
+  accessibilityElementsHidden={true}
+  importantForAccessibility="no-hide-descendants"
+  style={
+    [
+      {
+        "borderRadius": 999,
+        "flex": 1,
+        "height": 8,
+        "overflow": "hidden",
+      },
+      {
+        "backgroundColor": "#d5dde8",
+      },
+    ]
+  }
+  testID="range-bar"
+>
+  <View
+    style={
+      [
+        {
+          "borderRadius": 999,
+          "bottom": 0,
+          "overflow": "hidden",
+          "position": "absolute",
+          "top": 0,
+        },
+        {
+          "backgroundColor": "#1259c7",
+          "left": "0%",
+          "width": "100%",
+        },
+      ]
+    }
+    testID="range-bar-fill"
+  />
+</View>
+`;
+
+exports[`RangeBar renders the hottest day of the week 1`] = `
+<View
+  accessibilityElementsHidden={true}
+  importantForAccessibility="no-hide-descendants"
+  style={
+    [
+      {
+        "borderRadius": 999,
+        "flex": 1,
+        "height": 8,
+        "overflow": "hidden",
+      },
+      {
+        "backgroundColor": "#d5dde8",
+      },
+    ]
+  }
+  testID="range-bar"
+>
+  <View
+    style={
+      [
+        {
+          "borderRadius": 999,
+          "bottom": 0,
+          "overflow": "hidden",
+          "position": "absolute",
+          "top": 0,
+        },
+        {
+          "backgroundColor": "#1259c7",
+          "left": "60%",
+          "width": "40%",
+        },
+      ]
+    }
+    testID="range-bar-fill"
+  />
+</View>
+`;
