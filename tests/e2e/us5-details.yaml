@@ -1,0 +1,18 @@
+# User Story 5: details and alerts.
+# Run against a fake-provider build (npm run start:fake) with the simulator location near Paris.
+appId: com.w34th3r.app
+---
+- setLocation:
+    latitude: 48.8566
+    longitude: 2.3522
+- launchApp:
+    clearState: true
+    permissions:
+      location: allow
+- tapOn: 'Weather details'
+- assertVisible: 'Wind'
+- assertVisible: 'UV index'
+- assertVisible: 'Humidity'
+- assertVisible: 'Visibility'
+- assertVisible: 'Pressure'
+- assertVisible: 'Sunrise.*'
