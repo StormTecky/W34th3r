@@ -1,0 +1,18 @@
+# User Story 2: hourly and daily forecasts.
+# Run against a fake-provider build (npm run start:fake) with the simulator location near Paris.
+appId: com.w34th3r.app
+---
+- setLocation:
+    latitude: 48.8566
+    longitude: 2.3522
+- launchApp:
+    clearState: true
+    permissions:
+      location: allow
+- assertVisible: 'Hourly forecast'
+- assertVisible: 'Now'
+# Scroll down to the daily list and check the first days.
+- scrollUntilVisible:
+    element: '7-day forecast'
+- assertVisible: 'Today'
+- assertVisible: 'Tomorrow'
