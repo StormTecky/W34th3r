@@ -1,0 +1,27 @@
+# User Story 3: search for other places, view them, save them, and keep them across restarts.
+# Run against a fake-provider build (npm run start:fake); the fake knows several Springfields.
+appId: com.w34th3r.app
+---
+- setLocation:
+    latitude: 48.8566
+    longitude: 2.3522
+- launchApp:
+    clearState: true
+    permissions:
+      location: allow
+- tapOn: 'Search'
+- tapOn: 'City or place'
+- inputText: 'Springfield'
+# Results are disambiguated by region and country.
+- assertVisible: 'Springfield, Illinois, US'
+- assertVisible: 'Springfield, Massachusetts, US'
+# Save one, then open it.
+- tapOn: 'Save Springfield, Illinois, US'
+- tapOn: 'Springfield, Illinois, US'
+# Back on the weather screen, now showing that place.
+- assertVisible: 'Springfield'
+- assertVisible: 'Hourly forecast'
+# Restart the app: the saved place must still be in the list.
+- launchApp
+- tapOn: 'Saved places'
+- assertVisible: 'Springfield'
