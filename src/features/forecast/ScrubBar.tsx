@@ -12,10 +12,11 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-na
 import type { WeatherTheme } from '@/theme/theme-engine';
 import { elevation, radii, spacing, touch, typography } from '@/theme/tokens';
 import { useReducedMotion } from '@/theme/use-reduced-motion';
+import { Icon } from '@/ui/Icon';
 import { IconButton } from '@/ui/IconButton';
 
 import type { HourlyRow } from './forecast-view-model';
-import { clampIndex, indexFromPosition, positionFromIndex } from './scrub';
+import { centerFromIndex, clampIndex, indexFromPosition } from './scrub';
 
 export interface ScrubBarProps {
   rows: HourlyRow[];
@@ -26,8 +27,14 @@ export interface ScrubBarProps {
 }
 
 const THUMB = 26;
+const TICK_WIDTH = 3;
+/** Space between the track's edge and its first and last ticks (before half a tick). */
+const TRACK_PADDING = spacing.md;
+/** Distance from the bar's edge to the centre of its first and last ticks. */
+export const SCRUB_INSET = TRACK_PADDING + TICK_WIDTH / 2;
 const BAR_HEIGHT = touch.minTarget + 8;
-const SPRING = { damping: 18, stiffness: 240, mass: 0.6 };
+// No overshoot: the handle must come to rest exactly on a tick.
+const SPRING = { damping: 22, stiffness: 260, mass: 0.6, overshootClamping: true };
 /** A taller tick every this many hours, so the bar reads as a clock face. */
 const MAJOR_EVERY = 6;
 
@@ -35,7 +42,8 @@ const MAJOR_EVERY = 6;
 function useThumbStyle(index: number, count: number, width: number) {
   const reducedMotion = useReducedMotion();
   const x = useSharedValue(0);
-  const target = positionFromIndex(index, count) * Math.max(0, width - THUMB);
+  // The handle's centre sits on the tick, so its left edge is half a handle before it.
+  const target = centerFromIndex(index, count, width, SCRUB_INSET) - THUMB / 2;
 
   useEffect(() => {
     x.value = reducedMotion ? target : withSpring(target, SPRING);
@@ -67,7 +75,7 @@ function useScrubInput(count: number, index: number, onChange: (index: number) =
   }, [index]);
 
   const reportFrom = (event: GestureResponderEvent) => {
-    const next = indexFromPosition(event.nativeEvent.locationX, width, count);
+    const next = indexFromPosition(event.nativeEvent.locationX, width, count, SCRUB_INSET);
     if (width === 0 || next === lastReported.current) return;
     lastReported.current = next;
     onChange(next);
@@ -117,6 +125,7 @@ function Handle({ label, theme, style }: { label: string; theme: WeatherTheme; s
         {label}
       </Text>
       <View
+        testID="scrub-thumb"
         style={[styles.thumb, { backgroundColor: tile.accent, borderColor: tile.background }]}
       />
     </Animated.View>
@@ -127,6 +136,36 @@ function Handle({ label, theme, style }: { label: string; theme: WeatherTheme; s
  * A bar along the bottom of the weather screen: drag across it to travel through the coming hours.
  * It is also an accessible slider, so screen-reader users can step an hour at a time.
  */
+/**
+ * The slot at the start of the bar. It is always the same size, so the track never moves when the
+ * way back to now appears: a clock at rest, a "Back to now" button once you have travelled.
+ */
+function Cap({
+  index,
+  onChange,
+  theme,
+}: {
+  index: number;
+  onChange: (i: number) => void;
+  theme: WeatherTheme;
+}) {
+  const { tile } = theme;
+  return (
+    <View testID="scrub-cap" style={styles.cap}>
+      {index > 0 ? (
+        <IconButton
+          icon="clock"
+          label="Back to now"
+          color={tile.text}
+          onPress={() => onChange(0)}
+        />
+      ) : (
+        <Icon name="clock" size={22} color={tile.textSecondary} />
+      )}
+    </View>
+  );
+}
+
 export function ScrubBar({ rows, index, onChange, theme }: ScrubBarProps) {
   const { width, handlers } = useScrubInput(rows.length, index, onChange);
   const { onAccessibilityAction, ...touchHandlers } = handlers;
@@ -136,16 +175,8 @@ export function ScrubBar({ rows, index, onChange, theme }: ScrubBarProps) {
   const current = rows[clampIndex(index, rows.length)]!;
 
   return (
-    <View style={styles.row}>
-      {index > 0 ? (
-        <IconButton
-          icon="clock"
-          label="Back to now"
-          color={tile.text}
-          background={tile.background}
-          onPress={() => onChange(0)}
-        />
-      ) : null}
+    <View style={[styles.pill, elevation.low, { backgroundColor: tile.background }]}>
+      <Cap index={index} onChange={onChange} theme={theme} />
       <View
         testID="scrub-bar"
         accessible
@@ -156,7 +187,7 @@ export function ScrubBar({ rows, index, onChange, theme }: ScrubBarProps) {
         accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}
         onAccessibilityAction={onAccessibilityAction}
         {...touchHandlers}
-        style={[styles.bar, elevation.low, { backgroundColor: tile.background }]}
+        style={styles.track}
       >
         <Ticks rows={rows} color={tile.textSecondary} />
         <Handle label={current.timeLabel} theme={theme} style={thumbStyle} />
@@ -166,22 +197,30 @@ export function ScrubBar({ rows, index, onChange, theme }: ScrubBarProps) {
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  bar: {
+  pill: { flexDirection: 'row', alignItems: 'center', borderRadius: radii.pill },
+  cap: {
+    width: touch.minTarget,
+    height: touch.minTarget,
+    marginLeft: spacing.xs,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  track: {
     flex: 1,
     minHeight: BAR_HEIGHT,
-    borderRadius: radii.pill,
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: TRACK_PADDING,
     justifyContent: 'center',
   },
   ticks: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  tick: { width: 3, borderRadius: 2, opacity: 0.5 },
-  // The handle's travel is measured over the bar's inner width, so it lines up with the ticks.
-  thumbArea: { position: 'absolute', left: spacing.lg, top: 4, alignItems: 'center', width: THUMB },
+  tick: { width: TICK_WIDTH, borderRadius: 2, opacity: 0.5 },
+  // Positioned from the bar's left edge; the animated translateX puts its centre on a tick.
+  thumbArea: { position: 'absolute', left: 0, top: 0, alignItems: 'center', width: THUMB },
   label: { position: 'absolute', top: -22, minWidth: 64, textAlign: 'center' },
   thumb: {
     position: 'absolute',
-    top: BAR_HEIGHT / 2 - 4 - THUMB / 2 + 2,
+    left: 0,
+    // The ticks are centred in the bar, so the handle's centre is too.
+    top: BAR_HEIGHT / 2 - THUMB / 2,
     width: THUMB,
     height: THUMB,
     borderRadius: THUMB / 2,

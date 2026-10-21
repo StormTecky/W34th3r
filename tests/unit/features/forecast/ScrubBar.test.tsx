@@ -1,7 +1,8 @@
 import { fireEvent, screen } from '@testing-library/react-native';
 import { StyleSheet } from 'react-native';
 
-import { ScrubBar } from '@/features/forecast/ScrubBar';
+import { ScrubBar, SCRUB_INSET } from '@/features/forecast/ScrubBar';
+import { centerFromIndex } from '@/features/forecast/scrub';
 import { buildHourlyRows } from '@/features/forecast/forecast-view-model';
 import { buildSnapshot } from '@/providers/fake/scenarios';
 import { getTheme } from '@/theme/theme-engine';
@@ -111,6 +112,59 @@ describe('dragging', () => {
     const onChange = jest.fn();
     await renderWithProviders(<ScrubBar rows={rows} index={0} onChange={onChange} theme={theme} />);
     await touch('responderGrant', 100);
+    expect(onChange).not.toHaveBeenCalled();
+  });
+});
+
+describe('snapping', () => {
+  it('picks the hour whose tick was touched, for every hour', async () => {
+    const onChange = await renderBar(0);
+    for (let i = 1; i < rows.length; i++) {
+      await touch('responderMove', centerFromIndex(i, rows.length, 230, SCRUB_INSET));
+      expect(onChange).toHaveBeenLastCalledWith(i);
+    }
+  });
+
+  it('sends a touch beside a tick to the nearest tick', async () => {
+    const onChange = await renderBar(0);
+    const gap =
+      centerFromIndex(6, rows.length, 230, SCRUB_INSET) -
+      centerFromIndex(5, rows.length, 230, SCRUB_INSET);
+    const five = centerFromIndex(5, rows.length, 230, SCRUB_INSET);
+    await touch('responderMove', five + gap * 0.3);
+    expect(onChange).toHaveBeenLastCalledWith(5);
+    await touch('responderMove', five + gap * 0.7);
+    expect(onChange).toHaveBeenLastCalledWith(6);
+  });
+
+  it('centres the handle on the tick row', async () => {
+    await renderBar(3);
+    const thumb = StyleSheet.flatten(screen.getByTestId('scrub-thumb').props.style);
+    // The bar is 52 points tall and its ticks are centred, so the handle's centre must be at 26.
+    expect(thumb.top + thumb.height / 2).toBe(26);
+  });
+});
+
+describe('a layout that does not move under the finger', () => {
+  const capStyle = () => StyleSheet.flatten(screen.getByTestId('scrub-cap').props.style);
+
+  it('reserves the same slot for the clock whether or not the way back to now is offered', async () => {
+    await renderBar(0);
+    const atRest = capStyle();
+    expect(screen.queryByRole('button', { name: 'Back to now' })).toBeNull();
+    expect(screen.getByTestId('icon-clock', { includeHiddenElements: true })).toBeTruthy();
+
+    await renderBar(5);
+    const travelling = StyleSheet.flatten(screen.getAllByTestId('scrub-cap').at(-1)!.props.style);
+    expect(travelling.width).toBe(atRest.width);
+    expect(travelling.height).toBe(atRest.height);
+    expect(atRest.width).toBeGreaterThanOrEqual(44);
+  });
+
+  it('keeps the track outside the clock slot, so touching the clock never scrubs', async () => {
+    const onChange = await renderBar(5);
+    expect(screen.getByTestId('scrub-bar').props.onStartShouldSetResponder()).toBe(true);
+    expect(screen.getByTestId('scrub-cap').props.onStartShouldSetResponder).toBeUndefined();
     expect(onChange).not.toHaveBeenCalled();
   });
 });

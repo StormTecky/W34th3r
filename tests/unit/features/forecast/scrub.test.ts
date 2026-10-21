@@ -1,6 +1,7 @@
 import type { HourlyRow } from '@/features/forecast/forecast-view-model';
 import {
   buildMoment,
+  centerFromIndex,
   clampIndex,
   indexFromPosition,
   positionFromIndex,
@@ -32,6 +33,54 @@ describe('indexFromPosition', () => {
     expect(indexFromPosition(100, 240, 1)).toBe(0);
     expect(indexFromPosition(100, 0, 24)).toBe(0);
     expect(indexFromPosition(NaN, 240, 24)).toBe(0);
+  });
+});
+
+describe('snapping to the ticks (ticks sit inside an inset on both sides of the bar)', () => {
+  const WIDTH = 343;
+  const INSET = 17.5;
+  const COUNT = 24;
+
+  it('puts the handle exactly on the tick of each hour: touching a tick picks that hour', () => {
+    for (let i = 0; i < COUNT; i++) {
+      const x = centerFromIndex(i, COUNT, WIDTH, INSET);
+      expect(indexFromPosition(x, WIDTH, COUNT, INSET)).toBe(i);
+    }
+  });
+
+  it('places the first and last ticks at the inset from each edge', () => {
+    expect(centerFromIndex(0, COUNT, WIDTH, INSET)).toBe(INSET);
+    expect(centerFromIndex(COUNT - 1, COUNT, WIDTH, INSET)).toBe(WIDTH - INSET);
+  });
+
+  it('spaces the ticks evenly', () => {
+    const gap = centerFromIndex(1, COUNT, WIDTH, INSET) - centerFromIndex(0, COUNT, WIDTH, INSET);
+    for (let i = 1; i < COUNT; i++) {
+      const step =
+        centerFromIndex(i, COUNT, WIDTH, INSET) - centerFromIndex(i - 1, COUNT, WIDTH, INSET);
+      expect(step).toBeCloseTo(gap, 9);
+    }
+  });
+
+  it('sends a touch beside a tick to the nearest tick', () => {
+    for (let i = 0; i < COUNT - 1; i++) {
+      const here = centerFromIndex(i, COUNT, WIDTH, INSET);
+      const next = centerFromIndex(i + 1, COUNT, WIDTH, INSET);
+      const gap = next - here;
+      expect(indexFromPosition(here + gap * 0.4, WIDTH, COUNT, INSET)).toBe(i);
+      expect(indexFromPosition(here + gap * 0.6, WIDTH, COUNT, INSET)).toBe(i + 1);
+    }
+  });
+
+  it('treats touches in the margins as the first or last tick', () => {
+    expect(indexFromPosition(2, WIDTH, COUNT, INSET)).toBe(0);
+    expect(indexFromPosition(WIDTH - 2, WIDTH, COUNT, INSET)).toBe(COUNT - 1);
+  });
+
+  it('copes with a bar narrower than its insets or a single hour', () => {
+    expect(indexFromPosition(5, 20, COUNT, INSET)).toBe(0);
+    expect(centerFromIndex(3, 1, WIDTH, INSET)).toBe(INSET);
+    expect(centerFromIndex(3, COUNT, 0, INSET)).toBe(INSET);
   });
 });
 
