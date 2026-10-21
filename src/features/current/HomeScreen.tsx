@@ -7,6 +7,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CURRENT_PLACE_ID } from '@/domain/place';
 import type { Place } from '@/domain/types';
 import { ForecastSections } from '@/features/forecast/ForecastSections';
+import { ScrubBar } from '@/features/forecast/ScrubBar';
+import type { Moment } from '@/features/forecast/scrub';
 import { AlertsSection } from '@/features/details/AlertsSection';
 import { findPlace } from '@/features/places/find-place';
 import { LocationPermissionState } from '@/features/places/LocationPermissionState';
@@ -24,6 +26,7 @@ import { Skeleton } from '@/ui/Skeleton';
 import { UpdatedAgoLabel } from '@/ui/UpdatedAgoLabel';
 
 import { CurrentConditionsCard } from './CurrentConditionsCard';
+import { useScrubbing, type Scrubbing } from './use-scrubbing';
 import { useWeather, type UseWeatherResult } from './use-weather';
 
 function LoadingState({ color }: { color: string }) {
@@ -96,16 +99,19 @@ interface FrameProps {
   /** Route id of the place whose details the info button opens. */
   detailsId: string;
   onRefresh: () => Promise<void>;
+  /** A moment chosen on the time-travel bar; its sky replaces the live one while set. */
+  moment?: Moment | null;
+  /** The time-travel bar, pinned to the bottom of the screen. */
+  scrubber?: (theme: WeatherTheme) => ReactNode;
   children: (theme: WeatherTheme) => ReactNode;
 }
 
-/** The weather sky, navigation buttons, and a pull-to-refresh scroll area. */
-function HomeFrame({ weather, detailsId, onRefresh, children }: FrameProps) {
-  const insets = useSafeAreaInsets();
-  const [refreshing, setRefreshing] = useState(false);
-  const current = weather.data?.current;
-  const theme = current ? getTheme(current.condition, current.isDay) : getTheme('unknown', true);
+/** Room left at the bottom of the scroll area so the pinned bar never covers content. */
+const SCRUBBER_SPACE = 120;
 
+/** Runs a refresh and reports whether it is in progress, for the pull-to-refresh spinner. */
+function useRefresh(onRefresh: () => Promise<void>) {
+  const [refreshing, setRefreshing] = useState(false);
   const refresh = useCallback(async () => {
     setRefreshing(true);
     try {
@@ -114,22 +120,42 @@ function HomeFrame({ weather, detailsId, onRefresh, children }: FrameProps) {
       setRefreshing(false);
     }
   }, [onRefresh]);
+  return { refreshing, refresh };
+}
+
+/** The weather sky, navigation buttons, and a pull-to-refresh scroll area. */
+function HomeFrame({ weather, detailsId, onRefresh, moment, scrubber, children }: FrameProps) {
+  const insets = useSafeAreaInsets();
+  const { refreshing, refresh } = useRefresh(onRefresh);
+  const shown = moment ?? weather.data?.current;
+  const theme = shown ? getTheme(shown.condition, shown.isDay) : getTheme('unknown', true);
 
   return (
-    <ConditionBackground condition={current?.condition ?? 'unknown'} isDay={current?.isDay ?? true}>
+    <ConditionBackground condition={shown?.condition ?? 'unknown'} isDay={shown?.isDay ?? true}>
       <StatusBar style={theme.statusBar} />
       <View style={{ paddingTop: insets.top, paddingHorizontal: spacing.sm }}>
         <NavigationBar theme={theme} detailsId={detailsId} />
       </View>
       <ScrollView
         testID="home-scroll"
-        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xl }]}
+        contentContainerStyle={[
+          styles.content,
+          { paddingBottom: insets.bottom + (scrubber ? SCRUBBER_SPACE : spacing.xl) },
+        ]}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={theme.text} />
         }
       >
         {children(theme)}
       </ScrollView>
+      {scrubber ? (
+        <View
+          pointerEvents="box-none"
+          style={[styles.scrubber, { bottom: insets.bottom + spacing.md }]}
+        >
+          {scrubber(theme)}
+        </View>
+      ) : null}
     </ConditionBackground>
   );
 }
@@ -138,10 +164,11 @@ interface BodyProps {
   placeName: string;
   weather: UseWeatherResult;
   theme: WeatherTheme;
+  moment?: Moment | null;
 }
 
 /** Loading, error, or the weather itself for one place. */
-function WeatherBody({ placeName, weather, theme }: BodyProps) {
+function WeatherBody({ placeName, weather, theme, moment }: BodyProps) {
   const snapshot = weather.data;
   if (!snapshot) {
     if (weather.errorKind) {
@@ -157,7 +184,12 @@ function WeatherBody({ placeName, weather, theme }: BodyProps) {
   }
   return (
     <View>
-      <CurrentConditionsCard placeName={placeName} current={snapshot.current} theme={theme} />
+      <CurrentConditionsCard
+        placeName={placeName}
+        current={snapshot.current}
+        theme={theme}
+        moment={moment}
+      />
       <UpdatedAgoLabel
         fetchedAt={snapshot.fetchedAt}
         always={weather.errorKind !== null}
@@ -174,11 +206,44 @@ function WeatherBody({ placeName, weather, theme }: BodyProps) {
   );
 }
 
-function CurrentLocationHome() {
+/** The time-travel bar for a screen's scrubbing state, in the sky's colours. */
+function TimeTravel({ scrub, theme }: { scrub: Scrubbing; theme: WeatherTheme }) {
+  return <ScrubBar rows={scrub.rows} index={scrub.index} onChange={scrub.setIndex} theme={theme} />;
+}
+
+interface CurrentBodyProps {
+  location: ReturnType<typeof useDeviceLocation>;
+  placeName: string;
+  weather: UseWeatherResult;
+  scrub: Scrubbing;
+  theme: WeatherTheme;
+}
+
+/** Either the explanation of what to do about location, or the weather. */
+function CurrentBody({ location, placeName, weather, scrub, theme }: CurrentBodyProps) {
   const router = useRouter();
+  const { status } = location;
+  if (status === 'undetermined' || status === 'denied' || status === 'unavailable') {
+    return (
+      <LocationPermissionState
+        variant={status}
+        theme={theme}
+        onAllow={location.requestPermission}
+        onRetry={location.refresh}
+        onSearch={() => router.push('/search')}
+      />
+    );
+  }
+  return (
+    <WeatherBody placeName={placeName} weather={weather} theme={theme} moment={scrub.moment} />
+  );
+}
+
+function CurrentLocationHome() {
   const location = useDeviceLocation();
   const place = useCurrentPlace(location.coords);
   const weather = useWeather(place);
+  const scrub = useScrubbing(weather.data);
 
   const onRefresh = useCallback(async () => {
     await location.refresh();
@@ -190,33 +255,44 @@ function CurrentLocationHome() {
     status === 'undetermined' || status === 'denied' || status === 'unavailable';
 
   return (
-    <HomeFrame weather={weather} detailsId={CURRENT_PLACE_ID} onRefresh={onRefresh}>
-      {(theme) =>
-        needsLocation ? (
-          <LocationPermissionState
-            variant={status}
-            theme={theme}
-            onAllow={location.requestPermission}
-            onRetry={location.refresh}
-            onSearch={() => router.push('/search')}
-          />
-        ) : (
-          <WeatherBody placeName={place?.name ?? ''} weather={weather} theme={theme} />
-        )
-      }
+    <HomeFrame
+      weather={weather}
+      detailsId={CURRENT_PLACE_ID}
+      onRefresh={onRefresh}
+      moment={needsLocation ? null : scrub.moment}
+      scrubber={needsLocation ? undefined : (theme) => <TimeTravel scrub={scrub} theme={theme} />}
+    >
+      {(theme) => (
+        <CurrentBody
+          location={location}
+          placeName={place?.name ?? ''}
+          weather={weather}
+          scrub={scrub}
+          theme={theme}
+        />
+      )}
     </HomeFrame>
   );
 }
 
 function SelectedPlaceHome({ place }: { place: Place }) {
   const weather = useWeather(place);
+  const scrub = useScrubbing(weather.data);
   const onRefresh = useCallback(async () => {
     await weather.refetch();
   }, [weather]);
 
   return (
-    <HomeFrame weather={weather} detailsId={place.id} onRefresh={onRefresh}>
-      {(theme) => <WeatherBody placeName={place.name} weather={weather} theme={theme} />}
+    <HomeFrame
+      weather={weather}
+      detailsId={place.id}
+      onRefresh={onRefresh}
+      moment={scrub.moment}
+      scrubber={(theme) => <TimeTravel scrub={scrub} theme={theme} />}
+    >
+      {(theme) => (
+        <WeatherBody placeName={place.name} weather={weather} theme={theme} moment={scrub.moment} />
+      )}
     </HomeFrame>
   );
 }
@@ -235,6 +311,7 @@ export function HomeScreen() {
 const styles = StyleSheet.create({
   nav: { flexDirection: 'row', justifyContent: 'space-between' },
   navGroup: { flexDirection: 'row', gap: spacing.sm },
+  scrubber: { position: 'absolute', left: spacing.lg, right: spacing.lg },
   content: { flexGrow: 1, paddingHorizontal: spacing.lg },
   loading: { alignItems: 'center', gap: spacing.lg, paddingTop: spacing.xxxl },
   notice: { textAlign: 'center', marginTop: spacing.xs },
