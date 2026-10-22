@@ -15,6 +15,7 @@ as an alternative.
 - **Places**: search for any place, view its weather, save places, reorder and remove them.
 - **Details**: wind, UV index, humidity, visibility, pressure, sunrise and sunset, and official alerts.
 - **Yours**: choose units (temperature, wind, precipitation) and light, dark, or system appearance.
+- **In your language**: English or French, following the device: words, dates, times, numbers and the playful weather lines.
 - **Dependable**: when the network fails it shows the last known weather with its age, never a blank screen.
 
 The product spec, plan, and task list live in [`specs/001-weather-app/`](specs/001-weather-app/).
@@ -83,7 +84,7 @@ builds.
 ```text
 app/        Routes (thin: each file re-exports a screen from src/features)
 src/
-  domain/     Pure TypeScript: types, units, conditions, time zones, freshness
+  domain/     Pure TypeScript: types, units, conditions, time zones, freshness, language and texts
   providers/  The WeatherProvider adapter: Open-Meteo, OpenWeather, and a fake
   features/   current, forecast, details, places, settings (hooks and screens)
   theme/      Design tokens, weather themes, ambient effects
@@ -95,6 +96,33 @@ tests/        unit, contract, integration, e2e
 `domain` imports nothing from React Native or the network, and only the code under `src/providers`
 knows a provider's response shapes, so a provider can be replaced without touching the rest. Weather
 is requested in metric and converted on the device, so changing units never refetches.
+
+### Languages
+
+English and French are supported. The app follows the device: it uses the first of the device's
+preferred languages that it can translate (otherwise English), and keeps that locale's region for
+formats, so `fr-FR` reads "14 h" and "5,5 m/s", `fr-CA` reads "14 h 42" and `en-GB` uses a 24-hour
+clock. There is no in-app language picker yet; the app follows the device, even while it is open.
+The Open-Meteo condition names, place names and the OpenWeather descriptions are requested in the
+same language. Cached weather is kept per language, so after the device language changes the last
+known weather appears again once the app is online.
+
+Where the words live, and how to add a language (say Spanish):
+
+1. Add `'es'` to `SUPPORTED_LANGUAGES` in `src/domain/locale.ts`. The compiler then reports every
+   table that still needs a Spanish entry.
+2. `src/domain/messages/es.ts`: all interface text, the mood lines, unit names and spoken
+   descriptions. Copy `en.ts` and translate; functions (`minutesAgo(n)`) let a language choose its
+   own word order.
+3. `src/ui/error-messages.ts`: the friendly failure copy.
+4. `src/providers/openmeteo/codes.ts`: the weather condition names for Open-Meteo's weather codes.
+5. `locales/<language>.json` and `expo.locales` in `app.json`: the iOS location permission prompt,
+   which the system shows, not the app. Android shows no custom text.
+
+Tests fail until each table is complete, and the French catalog is also checked for untranslated
+strings and for a no-break space before `! ? : ; %`. Not translated: text that comes from the weather
+service itself (official alert headlines and descriptions), the fake provider's sample data, and
+developer-facing log and configuration messages.
 
 ## Security
 
@@ -118,7 +146,7 @@ Each runtime dependency has one job:
 | Package                                                                                  | Why                                                                     |
 | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
 | `expo`, `expo-router`, `expo-linking`, `expo-constants`, `expo-status-bar`               | App framework, file-based navigation and deep links                     |
-| `expo-location`, `expo-localization`                                                     | Device location (coarse, foreground) and region-based defaults          |
+| `expo-location`, `expo-localization`                                                     | Device location (coarse, foreground), language, formats, unit defaults  |
 | `expo-font`, `expo-linear-gradient`                                                      | Bundled typeface (Outfit, SIL OFL) and the sky gradients                |
 | `react-native-reanimated`, `react-native-worklets`                                       | Ambient weather effects on the UI thread                                |
 | `react-native-gesture-handler`, `react-native-screens`, `react-native-safe-area-context` | Navigation and layout primitives required by expo-router                |

@@ -12,7 +12,7 @@ Auth: `appid=<API key>` query parameter on every request.
 
 `GET /data/3.0/onecall?lat={lat}&lon={lon}&units=metric&exclude=minutely&appid={key}`
 
-Coordinates are rounded to 2 decimals before sending. Always `units=metric` (see research R-5). `lang` is left at the default (English) for v1.
+Coordinates are rounded to 2 decimals before sending. Always `units=metric` (see research R-5). `lang` is the language of the request's `locale` (`en` or `fr`), so `weather[0].description` arrives translated.
 
 Fields used from the response:
 
@@ -44,7 +44,8 @@ Rules:
 `GET /geo/1.0/direct?q={query}&limit=5&appid={key}`
 
 Response: array of `{ name, local_names?, lat, lon, country, state? }`. Maps to `Place`
-(`state` → `region`). An empty array is a valid "no places found" result, not an error.
+(`state` → `region`). When the request has a `locale` and `local_names` holds text for its
+language, that becomes the place's `name`; otherwise `name` is used as sent. An empty array is a valid "no places found" result, not an error.
 
 ## 3. Geocoding: reverse (name the device location)
 

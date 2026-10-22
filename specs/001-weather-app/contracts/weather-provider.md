@@ -9,13 +9,19 @@ code.
 ```ts
 interface WeatherProvider {
   /** Weather for a place. Rejects with ProviderError. */
-  getWeather(place: Pick<Place, "id" | "lat" | "lon">, opts?: { signal?: AbortSignal }): Promise<WeatherSnapshot>;
+  getWeather(place: Pick<Place, "id" | "lat" | "lon">, opts?: RequestOptions): Promise<WeatherSnapshot>;
 
   /** Search places by free text. Empty array when nothing matches. Rejects with ProviderError. */
-  searchPlaces(query: string, opts?: { signal?: AbortSignal }): Promise<Place[]>;
+  searchPlaces(query: string, opts?: RequestOptions): Promise<Place[]>;
 
   /** Name for coordinates. Resolves null when no name is available. Rejects with ProviderError. */
-  reverseGeocode(lat: number, lon: number, opts?: { signal?: AbortSignal }): Promise<Place | null>;
+  reverseGeocode(lat: number, lon: number, opts?: RequestOptions): Promise<Place | null>;
+}
+
+interface RequestOptions {
+  signal?: AbortSignal;
+  /** BCP 47 tag such as "fr-FR". Only its language is sent to the provider. */
+  locale?: string;
 }
 
 type ProviderErrorKind =
@@ -37,6 +43,10 @@ class ProviderError extends Error { kind: ProviderErrorKind; }
 5. Aborting via `signal` rejects promptly with an `Error` named `AbortError` (not a `ProviderError`: a cancellation is not a failure) and does not populate any cache.
 6. The adapter never logs API keys, coordinates, or search text.
 7. `searchPlaces("")` / whitespace-only input resolves `[]` without a network call.
+8. With a `locale`, condition names (`summary`) and place names come back in its language when the
+   provider has them, and in English otherwise; the "unknown conditions" fallback is worded in that
+   language too. Without a `locale` everything is English and names are left as the provider sent
+   them. Nothing else about the result depends on the locale: categories and numbers are identical.
 
 ## Consumers
 

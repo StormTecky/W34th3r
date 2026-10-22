@@ -44,13 +44,17 @@ All Technical Context unknowns are resolved below. No `NEEDS CLARIFICATION` item
 - **Rationale**: Fastest path to a polished iOS/Android app, first-class support for location,
   fonts, and animation libraries, simple CI and OTA/EAS builds later. File-based routes keep
   `app/` thin. Strict TypeScript satisfies Principle I.
+- **Language**: English and French, following the device (`expo-localization`). Words live in typed
+  catalogs under `src/domain/messages/`; formats come from `Intl` with the device locale, so the
+  region still matters (`fr-CA` vs `fr-FR`). No i18n library: the app has two languages and a few
+  dozen strings, and plain typed objects give compile-time completeness (Principle IV).
 - **Alternatives considered**: Bare React Native CLI (more native setup, no benefit here);
   React Navigation without expo-router (equivalent, but more manual route wiring).
 
 ## R-4: Data fetching, caching, and offline behavior
 
 - **Decision**: TanStack Query with persisted cache (AsyncStorage persister). Query key per
-  place; `staleTime` of 15 minutes; refetch on app foreground and manual pull-to-refresh;
+  place and language (condition names are translated by the provider); `staleTime` of 15 minutes; refetch on app foreground and manual pull-to-refresh;
   `gcTime` long enough to survive restarts (e.g. 7 days). Weather data older than the last
   successful fetch is shown with an "updated N min ago" label when a refetch fails.
 - **Rationale**: Directly implements FR-013 (refresh if >15 min), FR-014 (last known data on

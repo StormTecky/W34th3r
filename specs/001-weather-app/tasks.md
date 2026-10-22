@@ -308,6 +308,18 @@ a visual aid; an active alert is flagged and its full text opens on demand (spec
 - [ ] T127 Run the quickstart.md validation end to end (steps 2–6, scenarios 1–12) on iOS and Android and record results
   - Status: PARTIAL. Step 2 (lint, types, tests, coverage) passes and iOS/Android bundles compile. Steps 3, 5 and 6 are pending: they need an OpenWeather key, a simulator, and Maestro. Results are in the "Validation log" of `quickstart.md`.
 
+### Localization: English and French (FR-018)
+
+- [X] T128 [P] Write and pass `tests/unit/domain/locale.test.ts` and `tests/unit/domain/messages.test.ts`: language and locale resolution from the device's preferred locales, every catalog has the same entries as English, no untranslated French strings, no-break space before `! ? : ; %`
+- [X] T129 [P] Add French cases to the domain tests (`mood`, `freshness`, `time`, `units`) and implement `src/domain/locale.ts`, `src/domain/messages/` and the `locale` parameter of the domain formatters
+- [X] T130 [P] Add French cases to `details-view-model.test.ts` and `forecast-view-model.test.ts`; localize both view-models and the compass, UV, alert and precipitation texts
+- [X] T131 [P] Write and pass `tests/contract/localization.contract.test.ts`: `RequestOptions.locale` selects the Open-Meteo `language` and `localityLanguage`, the OpenWeather `lang` and `local_names`, and the French WMO names; implement in `src/providers/`
+- [X] T132 Write and pass the hook tests (`query-client`, `use-weather`, `use-place-search`, `use-current-place`, `use-locale`): the locale reaches the provider, the weather cache is keyed per language (`CACHE_SCHEMA_VERSION` 2), `useDeviceLocale` follows the device
+- [X] T133 Localize every screen and component through `useLocale()` (`src/lib/use-locale.tsx`), mount `LocaleProvider` in `app/_layout.tsx`, and move the failure copy to `src/ui/error-messages.ts` per language
+- [X] T134 Write and pass `tests/integration/localization.test.tsx` and run `accessibility.test.tsx` in both languages: French Home, Details, Places, Search, Settings, failure states, stale-data age and location prompts
+- [X] T135 [P] Localize the iOS location permission prompt (`locales/fr.json`, `expo.locales` in `app.json`) with a config test; document how to add a language in `README.md`
+- [ ] T136 Check on an iOS and an Android device or simulator set to French (and to a language that is not translated): permission prompt text, 24-hour clock, decimal comma, no-break spaces, nothing clipped at large text sizes. Maestro flows in `tests/e2e/` assert English text and need an English device
+
 ---
 
 ## Dependencies & Execution Order
