@@ -67,6 +67,8 @@ export type OneCallResponse = z.infer<typeof oneCallSchema>;
 
 const geocodingItem = z.object({
   name: z.string().min(1),
+  /** Name by language code; values are checked where they are used. */
+  local_names: z.record(z.string(), z.unknown()).nullish(),
   lat: z.number().min(-90).max(90),
   lon: z.number().min(-180).max(180),
   country: z.string().min(1),

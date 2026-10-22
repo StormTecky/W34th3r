@@ -1,4 +1,6 @@
 import { categoryFromOpenWeatherId, isDayAt } from '@/domain/conditions';
+import { languageOf } from '@/domain/locale';
+import { messagesFor } from '@/domain/messages';
 import { CURRENT_PLACE_ID, placeIdFor, roundCoordinate } from '@/domain/place';
 import type {
   AlertSeverity,
@@ -25,13 +27,19 @@ export interface MapContext {
   placeId: string;
   /** Epoch seconds at which the response was received. */
   fetchedAt: number;
+  /** Language of the fallback condition name; English when omitted. */
+  locale?: string;
 }
 
 type WeatherList = OneCallResponse['current']['weather'];
 
 const clamp = (value: number, low: number, high: number) => Math.min(high, Math.max(low, value));
 
-function describe(weather: WeatherList): {
+/** The description arrives in the requested language; only the empty case is worded here. */
+function describe(
+  weather: WeatherList,
+  locale: string | undefined,
+): {
   condition: ReturnType<typeof categoryFromOpenWeatherId>;
   summary: string;
 } {
@@ -39,7 +47,10 @@ function describe(weather: WeatherList): {
   const text = entry.description.trim();
   return {
     condition: categoryFromOpenWeatherId(entry.id),
-    summary: text.length > 0 ? text.charAt(0).toUpperCase() + text.slice(1) : 'Unknown conditions',
+    summary:
+      text.length > 0
+        ? text.charAt(0).toUpperCase() + text.slice(1)
+        : messagesFor(locale).common.unknownConditions,
   };
 }
 
@@ -73,7 +84,10 @@ function mapAlerts(alerts: OneCallResponse['alerts']): WeatherAlert[] {
   }));
 }
 
-function mapHourly(entries: OneCallResponse['hourly']): HourlyForecastEntry[] {
+function mapHourly(
+  entries: OneCallResponse['hourly'],
+  locale: string | undefined,
+): HourlyForecastEntry[] {
   return [...entries]
     .sort((a, b) => a.dt - b.dt)
     .slice(0, HOURLY_LIMIT)
@@ -81,7 +95,7 @@ function mapHourly(entries: OneCallResponse['hourly']): HourlyForecastEntry[] {
       kind: 'hour',
       start: entry.dt,
       temperature: entry.temp,
-      ...describe(entry.weather),
+      ...describe(entry.weather, locale),
       precipChance: precipChance(entry.pop),
     }));
 }
@@ -90,13 +104,16 @@ function sortDaily(entries: OneCallResponse['daily']): OneCallResponse['daily'] 
   return [...entries].sort((a, b) => a.dt - b.dt);
 }
 
-function mapDaily(entries: OneCallResponse['daily']): DailyForecastEntry[] {
+function mapDaily(
+  entries: OneCallResponse['daily'],
+  locale: string | undefined,
+): DailyForecastEntry[] {
   return entries.slice(0, DAILY_LIMIT).map((entry) => ({
     kind: 'day',
     start: entry.dt,
     high: entry.temp.max,
     low: entry.temp.min,
-    ...describe(entry.weather),
+    ...describe(entry.weather, locale),
     precipChance: precipChance(entry.pop),
   }));
 }
@@ -104,6 +121,7 @@ function mapDaily(entries: OneCallResponse['daily']): DailyForecastEntry[] {
 function mapCurrent(
   raw: OneCallResponse,
   today: OneCallResponse['daily'][number],
+  locale: string | undefined,
 ): CurrentConditions {
   const { current } = raw;
   // Polar regions may report no sun events at all; 0 means "unavailable".
@@ -114,7 +132,7 @@ function mapCurrent(
     observedAt: current.dt,
     temperature: current.temp,
     feelsLike: current.feels_like,
-    ...describe(current.weather),
+    ...describe(current.weather, locale),
     isDay: isDayAt(current.dt, sunrise, sunset),
     high: today.temp.max,
     low: today.temp.min,
@@ -139,9 +157,9 @@ export function mapOneCall(raw: OneCallResponse, context: MapContext): WeatherSn
     fetchedAt: context.fetchedAt,
     timeZone: raw.timezone,
     timeZoneOffset: raw.timezone_offset,
-    current: mapCurrent(raw, daily[0]!),
-    hourly: mapHourly(raw.hourly),
-    daily: mapDaily(daily),
+    current: mapCurrent(raw, daily[0]!, context.locale),
+    hourly: mapHourly(raw.hourly, context.locale),
+    daily: mapDaily(daily, context.locale),
     alerts: mapAlerts(raw.alerts),
   };
 }
@@ -171,6 +189,16 @@ function parseGeocoding(json: unknown): GeocodingItem[] {
 }
 
 /**
+ * The place's name in the locale's language when the service has one, otherwise as it came. Without
+ * a locale the name is left untouched.
+ */
+function localName(item: GeocodingItem, locale: string | undefined): string {
+  if (locale === undefined) return item.name;
+  const local = item.local_names?.[languageOf(locale)];
+  return typeof local === 'string' && local.trim() !== '' ? local : item.name;
+}
+
+/**
  * Names the device location from a reverse-geocoding body. The Place keeps the coordinates that
  * were asked about (rounded), not the geocoder's, because weather is fetched for those.
  * An empty result means "no name available" and yields null.
@@ -178,12 +206,13 @@ function parseGeocoding(json: unknown): GeocodingItem[] {
 export function parseReverseGeocode(
   json: unknown,
   requested: { lat: number; lon: number },
+  locale?: string,
 ): Place | null {
   const first = parseGeocoding(json)[0];
   if (!first) return null;
   return {
     id: CURRENT_PLACE_ID,
-    name: first.name,
+    name: localName(first, locale),
     region: first.state ?? null,
     country: first.country,
     lat: roundCoordinate(requested.lat),
@@ -195,10 +224,10 @@ export function parseReverseGeocode(
 }
 
 /** Maps a place-search body to saved-kind Places keyed by their rounded coordinates. */
-export function parseSearchResults(json: unknown): Place[] {
+export function parseSearchResults(json: unknown, locale?: string): Place[] {
   return parseGeocoding(json).map((item) => ({
     id: placeIdFor(item.lat, item.lon),
-    name: item.name,
+    name: localName(item, locale),
     region: item.state ?? null,
     country: item.country,
     lat: roundCoordinate(item.lat),

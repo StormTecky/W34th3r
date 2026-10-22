@@ -19,6 +19,8 @@ export interface MapContext {
   placeId: string;
   /** Epoch seconds at which the response was received. */
   fetchedAt: number;
+  /** Language of the condition names; English when omitted. */
+  locale?: string;
 }
 
 const clamp = (value: number, low: number, high: number) => Math.min(high, Math.max(low, value));
@@ -39,7 +41,11 @@ function currentHourIndex(hourly: ForecastResponse['hourly'], now: number): numb
   return hourly.time.findIndex((time) => time >= hourStart);
 }
 
-function mapHourly(hourly: ForecastResponse['hourly'], startIndex: number): HourlyForecastEntry[] {
+function mapHourly(
+  hourly: ForecastResponse['hourly'],
+  startIndex: number,
+  locale: string | undefined,
+): HourlyForecastEntry[] {
   const entries: HourlyForecastEntry[] = [];
   for (let i = startIndex; i < hourly.time.length && entries.length < HOURLY_LIMIT; i++) {
     const temperature = hourly.temperature_2m[i];
@@ -50,14 +56,17 @@ function mapHourly(hourly: ForecastResponse['hourly'], startIndex: number): Hour
       start: hourly.time[i]!,
       temperature,
       condition: categoryFromWmo(code),
-      summary: describeWmo(code),
+      summary: describeWmo(code, locale),
       precipChance: percent(hourly.precipitation_probability?.[i]),
     });
   }
   return entries;
 }
 
-function mapDaily(daily: ForecastResponse['daily']): DailyForecastEntry[] {
+function mapDaily(
+  daily: ForecastResponse['daily'],
+  locale: string | undefined,
+): DailyForecastEntry[] {
   const entries: DailyForecastEntry[] = [];
   for (let i = 0; i < daily.time.length && entries.length < DAILY_LIMIT; i++) {
     const high = daily.temperature_2m_max[i];
@@ -71,7 +80,7 @@ function mapDaily(daily: ForecastResponse['daily']): DailyForecastEntry[] {
       high,
       low,
       condition: categoryFromWmo(code),
-      summary: describeWmo(code),
+      summary: describeWmo(code, locale),
       precipChance: percent(daily.precipitation_probability_max?.[i]),
     });
   }
@@ -82,6 +91,7 @@ function mapCurrent(
   raw: ForecastResponse,
   hourIndex: number,
   today: DailyForecastEntry,
+  locale: string | undefined,
 ): CurrentConditions {
   const { current, daily, hourly } = raw;
   const mapped: CurrentConditions = {
@@ -89,7 +99,7 @@ function mapCurrent(
     temperature: current.temperature_2m,
     feelsLike: current.apparent_temperature,
     condition: categoryFromWmo(current.weather_code),
-    summary: describeWmo(current.weather_code),
+    summary: describeWmo(current.weather_code, locale),
     isDay: current.is_day === 1,
     high: today.high,
     low: today.low,
@@ -122,8 +132,8 @@ export function parseForecast(json: unknown, context: MapContext): WeatherSnapsh
   }
   const raw = result.data;
   const hourIndex = currentHourIndex(raw.hourly, raw.current.time);
-  const hourly = hourIndex === -1 ? [] : mapHourly(raw.hourly, hourIndex);
-  const daily = mapDaily(raw.daily);
+  const hourly = hourIndex === -1 ? [] : mapHourly(raw.hourly, hourIndex, context.locale);
+  const daily = mapDaily(raw.daily, context.locale);
   const today = daily[0];
   if (hourly.length === 0 || !today) throw malformed('forecast', ['hourly', 'daily']);
 
@@ -132,7 +142,7 @@ export function parseForecast(json: unknown, context: MapContext): WeatherSnapsh
     fetchedAt: context.fetchedAt,
     timeZone: raw.timezone,
     timeZoneOffset: raw.utc_offset_seconds,
-    current: mapCurrent(raw, hourIndex, today),
+    current: mapCurrent(raw, hourIndex, today, context.locale),
     hourly,
     daily,
     alerts: [],

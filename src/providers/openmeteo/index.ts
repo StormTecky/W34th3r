@@ -1,3 +1,4 @@
+import { languageOf } from '@/domain/locale';
 import { roundCoordinate } from '@/domain/place';
 import type { Place, WeatherSnapshot } from '@/domain/types';
 
@@ -76,7 +77,11 @@ export class OpenMeteoProvider implements WeatherProvider {
       },
       options,
     );
-    return parseForecast(json, { placeId: place.id, fetchedAt: this.now() });
+    return parseForecast(json, {
+      placeId: place.id,
+      fetchedAt: this.now(),
+      locale: options?.locale,
+    });
   }
 
   async searchPlaces(query: string, options?: RequestOptions): Promise<Place[]> {
@@ -84,7 +89,7 @@ export class OpenMeteoProvider implements WeatherProvider {
     if (text === '') return [];
     const json = await this.clients.geocoding.getJson(
       '/v1/search',
-      { name: text, count: 5, language: 'en', format: 'json' },
+      { name: text, count: 5, language: languageOf(options?.locale), format: 'json' },
       options,
     );
     return parseSearchResults(json);
@@ -93,7 +98,11 @@ export class OpenMeteoProvider implements WeatherProvider {
   async reverseGeocode(lat: number, lon: number, options?: RequestOptions): Promise<Place | null> {
     const json = await this.clients.reverse.getJson(
       '/data/reverse-geocode-client',
-      { latitude: roundCoordinate(lat), longitude: roundCoordinate(lon), localityLanguage: 'en' },
+      {
+        latitude: roundCoordinate(lat),
+        longitude: roundCoordinate(lon),
+        localityLanguage: languageOf(options?.locale),
+      },
       options,
     );
     return parseReverseGeocode(json, { lat, lon });

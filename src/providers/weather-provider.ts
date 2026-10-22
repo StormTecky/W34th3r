@@ -40,6 +40,12 @@ export function isProviderError(error: unknown): error is ProviderError {
 
 export interface RequestOptions {
   signal?: AbortSignal;
+  /**
+   * BCP 47 tag of the user's locale, e.g. "fr-FR". Condition names and place names come back in
+   * its language when the provider has them; English otherwise. Never sent as such: only the
+   * language reaches the service.
+   */
+  locale?: string;
 }
 
 export type WeatherTarget = Pick<Place, 'id' | 'lat' | 'lon'>;

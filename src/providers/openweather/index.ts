@@ -1,3 +1,4 @@
+import { languageOf } from '@/domain/locale';
 import { roundCoordinate } from '@/domain/place';
 import type { Place, WeatherSnapshot } from '@/domain/types';
 
@@ -30,17 +31,22 @@ export class OpenWeatherProvider implements WeatherProvider {
         lon: roundCoordinate(place.lon),
         units: 'metric',
         exclude: 'minutely',
+        lang: languageOf(options?.locale),
       },
       options,
     );
-    return parseOneCall(json, { placeId: place.id, fetchedAt: this.now() });
+    return parseOneCall(json, {
+      placeId: place.id,
+      fetchedAt: this.now(),
+      locale: options?.locale,
+    });
   }
 
   async searchPlaces(query: string, options?: RequestOptions): Promise<Place[]> {
     const text = query.trim();
     if (text === '') return [];
     const json = await this.client.getJson('/geo/1.0/direct', { q: text, limit: 5 }, options);
-    return parseSearchResults(json);
+    return parseSearchResults(json, options?.locale);
   }
 
   async reverseGeocode(lat: number, lon: number, options?: RequestOptions): Promise<Place | null> {
@@ -49,6 +55,6 @@ export class OpenWeatherProvider implements WeatherProvider {
       { lat: roundCoordinate(lat), lon: roundCoordinate(lon), limit: 1 },
       options,
     );
-    return parseReverseGeocode(json, { lat, lon });
+    return parseReverseGeocode(json, { lat, lon }, options?.locale);
   }
 }
