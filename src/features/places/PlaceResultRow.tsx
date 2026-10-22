@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import type { Place } from '@/domain/types';
+import { useLocale } from '@/lib/use-locale';
 import { spacing, touch, typography } from '@/theme/tokens';
 import { useTheme } from '@/theme/use-theme';
 import { IconButton } from '@/ui/IconButton';
@@ -17,6 +18,7 @@ export interface PlaceResultRowProps {
 /** A search result: open it to see its weather, or save/unsave it with the trailing button. */
 export function PlaceResultRow({ place, saved, onOpen, onToggleSave }: PlaceResultRowProps) {
   const { colors } = useTheme();
+  const { messages } = useLocale();
   const label = placeLabel(place);
   const subtitle = placeSubtitle(place);
 
@@ -37,7 +39,7 @@ export function PlaceResultRow({ place, saved, onOpen, onToggleSave }: PlaceResu
         icon="bookmark"
         filled={saved}
         color={saved ? colors.accent : colors.textSecondary}
-        label={saved ? `Remove ${label} from saved places` : `Save ${label}`}
+        label={saved ? messages.places.removeFromSaved(label) : messages.places.save(label)}
         onPress={() => onToggleSave(place)}
       />
     </View>

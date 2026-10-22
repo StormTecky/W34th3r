@@ -8,31 +8,27 @@ import { getConfig } from '@/config/env';
 import { ScreenHeader } from '@/ui/ScreenHeader';
 
 import { SegmentedControl, type SegmentOption } from './SegmentedControl';
+import {
+  APPEARANCES,
+  PRECIPITATION_UNITS,
+  TEMPERATURE_UNITS,
+  WIND_SPEED_UNITS,
+} from './preferences-store';
 import { usePreferences } from './use-preferences';
-import type { Appearance, PrecipitationUnit, TemperatureUnit, WindSpeedUnit } from '@/domain/types';
+import type { UnitText } from '@/domain/messages';
+import { useLocale } from '@/lib/use-locale';
 
-const TEMPERATURE: SegmentOption<TemperatureUnit>[] = [
-  { value: 'c', label: '°C', accessibilityLabel: 'Celsius' },
-  { value: 'f', label: '°F', accessibilityLabel: 'Fahrenheit' },
-];
-
-const WIND: SegmentOption<WindSpeedUnit>[] = [
-  { value: 'ms', label: 'm/s', accessibilityLabel: 'Metres per second' },
-  { value: 'kmh', label: 'km/h', accessibilityLabel: 'Kilometres per hour' },
-  { value: 'mph', label: 'mph', accessibilityLabel: 'Miles per hour' },
-  { value: 'kn', label: 'kn', accessibilityLabel: 'Knots' },
-];
-
-const PRECIPITATION: SegmentOption<PrecipitationUnit>[] = [
-  { value: 'mm', label: 'mm', accessibilityLabel: 'Millimetres' },
-  { value: 'in', label: 'in', accessibilityLabel: 'Inches' },
-];
-
-const APPEARANCE: SegmentOption<Appearance>[] = [
-  { value: 'system', label: 'System' },
-  { value: 'light', label: 'Light' },
-  { value: 'dark', label: 'Dark' },
-];
+/** The segments for a set of units, in order, labelled in the interface language. */
+function unitOptions<T extends string>(
+  order: readonly T[],
+  text: Record<T, UnitText>,
+): SegmentOption<T>[] {
+  return order.map((value) => ({
+    value,
+    label: text[value].label,
+    accessibilityLabel: text[value].name,
+  }));
+}
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   const { colors } = useTheme();
@@ -63,46 +59,46 @@ function Choice<T extends string>({ title, value, options, onChange }: ChoicePro
 
 function Choices() {
   const { preferences: p, update } = usePreferences();
+  const { messages } = useLocale();
+  const { sections, appearance } = messages.settings;
+  const { units } = messages;
+  const appearanceOptions = APPEARANCES.map((value) => ({ value, label: appearance[value] }));
   return (
     <>
       <Choice
-        title="Temperature"
+        title={sections.temperature}
         value={p.temperatureUnit}
-        options={TEMPERATURE}
+        options={unitOptions(TEMPERATURE_UNITS, units.temperature)}
         onChange={(temperatureUnit) => void update({ temperatureUnit })}
       />
       <Choice
-        title="Wind speed"
+        title={sections.windSpeed}
         value={p.windSpeedUnit}
-        options={WIND}
+        options={unitOptions(WIND_SPEED_UNITS, units.windSpeed)}
         onChange={(windSpeedUnit) => void update({ windSpeedUnit })}
       />
       <Choice
-        title="Precipitation"
+        title={sections.precipitation}
         value={p.precipitationUnit}
-        options={PRECIPITATION}
+        options={unitOptions(PRECIPITATION_UNITS, units.precipitation)}
         onChange={(precipitationUnit) => void update({ precipitationUnit })}
       />
       <Choice
-        title="Appearance"
+        title={sections.appearance}
         value={p.appearance}
-        options={APPEARANCE}
+        options={appearanceOptions}
         onChange={(appearance) => void update({ appearance })}
       />
     </>
   );
 }
 
-const ATTRIBUTION: Record<string, string> = {
-  'open-meteo':
-    'Weather data by Open-Meteo.com (CC BY 4.0). The name of your location comes from BigDataCloud.',
-  openweather: 'Weather data by OpenWeather.',
-};
-
 /** Credit for the weather provider in use, as its terms require. Nothing for the fake provider. */
 function Attribution() {
   const { colors } = useTheme();
-  const text = ATTRIBUTION[getConfig().provider];
+  const { attribution } = useLocale().messages.settings;
+  const provider = getConfig().provider;
+  const text = provider === 'fake' ? null : attribution[provider];
   if (!text) return null;
   return (
     <Text testID="attribution" style={[typography.caption, { color: colors.textSecondary }]}>
@@ -114,6 +110,7 @@ function Attribution() {
 /** Units and appearance. Changes apply everywhere immediately and are remembered. */
 export function SettingsScreen() {
   const { colors } = useTheme();
+  const { messages } = useLocale();
   const insets = useSafeAreaInsets();
   const padding = { paddingTop: insets.top, paddingBottom: insets.bottom };
 
@@ -122,11 +119,11 @@ export function SettingsScreen() {
       testID="settings-screen"
       style={[styles.screen, { backgroundColor: colors.background }, padding]}
     >
-      <ScreenHeader title="Settings" />
+      <ScreenHeader title={messages.common.settings} />
       <ScrollView contentContainerStyle={styles.content}>
         <Choices />
         <Text style={[typography.caption, { color: colors.textSecondary }]}>
-          Units start from your region and change only when you choose.
+          {messages.settings.note}
         </Text>
         <Attribution />
       </ScrollView>

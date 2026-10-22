@@ -3,24 +3,25 @@ import { useQuery } from '@tanstack/react-query';
 import { CURRENT_PLACE_ID } from '@/domain/place';
 import type { Place } from '@/domain/types';
 import { log } from '@/lib/logger';
+import { useLocale } from '@/lib/use-locale';
 import { useWeatherProvider } from '@/providers/provider-context';
 import { isProviderError } from '@/providers/weather-provider';
 
 import type { Coordinates } from './use-device-location';
 
-export const GENERIC_PLACE_NAME = 'Current location';
-
 /**
  * The device-location Place. Weather can load as soon as coordinates exist; the name arrives from
- * reverse geocoding a moment later and falls back to a generic label if it is unavailable.
+ * reverse geocoding a moment later and falls back to a generic label ("Current location", in the
+ * device language) if it is unavailable.
  */
 export function useCurrentPlace(coords: Coordinates | null): Place | null {
   const provider = useWeatherProvider();
+  const { locale, language, messages } = useLocale();
   const geocoded = useQuery({
-    queryKey: ['reverse-geocode', coords?.lat, coords?.lon],
+    queryKey: ['reverse-geocode', coords?.lat, coords?.lon, language],
     queryFn: async ({ signal }) => {
       try {
-        return await provider.reverseGeocode(coords!.lat, coords!.lon, { signal });
+        return await provider.reverseGeocode(coords!.lat, coords!.lon, { signal, locale });
       } catch (error) {
         // The place keeps a generic name; weather still loads. Log the kind, never the coordinates.
         if (isProviderError(error)) log.warn('Reverse geocoding failed', { kind: error.kind });
@@ -35,7 +36,7 @@ export function useCurrentPlace(coords: Coordinates | null): Place | null {
   const named = geocoded.data;
   return {
     id: CURRENT_PLACE_ID,
-    name: named?.name ?? GENERIC_PLACE_NAME,
+    name: named?.name ?? messages.common.currentLocation,
     region: named?.region ?? null,
     country: named?.country ?? '',
     lat: coords.lat,

@@ -2,6 +2,7 @@ import type { Query } from '@tanstack/react-query';
 
 import {
   CACHE_MAX_AGE_MS,
+  CACHE_SCHEMA_VERSION,
   createAppQueryClient,
   createPersistOptions,
   makeCacheBuster,
@@ -36,9 +37,14 @@ describe('query client defaults', () => {
 });
 
 describe('weatherQueryKey', () => {
-  it('is keyed per place', () => {
-    expect(weatherQueryKey('current')).toEqual(['weather', 'current']);
-    expect(weatherQueryKey('48.86,2.35')).toEqual(['weather', '48.86,2.35']);
+  it('is keyed per place and per language, English by default', () => {
+    expect(weatherQueryKey('current')).toEqual(['weather', 'current', 'en']);
+    expect(weatherQueryKey('48.86,2.35')).toEqual(['weather', '48.86,2.35', 'en']);
+    expect(weatherQueryKey('current', 'fr')).toEqual(['weather', 'current', 'fr']);
+  });
+
+  it('keeps the condition names of one language apart from another', () => {
+    expect(weatherQueryKey('current', 'fr')).not.toEqual(weatherQueryKey('current', 'en'));
   });
 });
 
@@ -50,10 +56,16 @@ describe('persistence options', () => {
   });
 
   it('includes the weather provider in the default cache key', () => {
-    expect(createPersistOptions().buster).toMatch(/\+(open-meteo|openweather|fake|unknown):1$/);
+    expect(createPersistOptions().buster).toMatch(
+      new RegExp(`\\+(open-meteo|openweather|fake|unknown):${CACHE_SCHEMA_VERSION}$`),
+    );
     expect(createPersistOptions('1.0.0+open-meteo').buster).not.toBe(
       createPersistOptions('1.0.0+fake').buster,
     );
+  });
+
+  it('starts a new cache now that weather is keyed by language (version 1 had no language)', () => {
+    expect(CACHE_SCHEMA_VERSION).toBeGreaterThanOrEqual(2);
   });
 
   it('expires persisted entries after 7 days', () => {

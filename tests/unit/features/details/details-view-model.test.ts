@@ -3,7 +3,6 @@ import {
   alertPeriodLabel,
   buildDetails,
   compassPoint,
-  SEVERITY_LABEL,
   sortAlerts,
   uvCategory,
 } from '@/features/details/details-view-model';
@@ -23,17 +22,28 @@ const kmh = { windSpeedUnit: 'kmh', now: NOW } as const;
 
 describe('compassPoint', () => {
   it.each([
-    [0, 'N', 'north'],
-    [22.5, 'NNE', 'north-northeast'],
-    [45, 'NE', 'northeast'],
-    [90, 'E', 'east'],
-    [135, 'SE', 'southeast'],
-    [180, 'S', 'south'],
-    [250, 'WSW', 'west-southwest'],
-    [270, 'W', 'west'],
-    [337.5, 'NNW', 'north-northwest'],
-  ])('maps %d degrees to %s', (degrees, abbreviation, name) => {
-    expect(compassPoint(degrees)).toEqual({ abbreviation, name });
+    [0, 'N', 'north', 'from north'],
+    [22.5, 'NNE', 'north-northeast', 'from north-northeast'],
+    [45, 'NE', 'northeast', 'from northeast'],
+    [90, 'E', 'east', 'from east'],
+    [135, 'SE', 'southeast', 'from southeast'],
+    [180, 'S', 'south', 'from south'],
+    [250, 'WSW', 'west-southwest', 'from west-southwest'],
+    [270, 'W', 'west', 'from west'],
+    [337.5, 'NNW', 'north-northwest', 'from north-northwest'],
+  ])('maps %d degrees to %s', (degrees, abbreviation, name, from) => {
+    expect(compassPoint(degrees)).toEqual({ abbreviation, name, from });
+  });
+
+  it.each([
+    [0, 'N', 'nord', 'du nord'],
+    [90, 'E', 'est', "de l'est"],
+    [180, 'S', 'sud', 'du sud'],
+    [250, 'OSO', 'ouest-sud-ouest', "de l'ouest-sud-ouest"],
+    [270, 'O', 'ouest', "de l'ouest"],
+    [337.5, 'NNO', 'nord-nord-ouest', 'du nord-nord-ouest'],
+  ])('names %d degrees in French as %s', (degrees, abbreviation, name, from) => {
+    expect(compassPoint(degrees, 'fr-FR')).toEqual({ abbreviation, name, from });
   });
 
   it('wraps at the top of the circle and for out-of-range values', () => {
@@ -129,7 +139,8 @@ describe('buildDetails: UV index', () => {
     expect(uv.available).toBe(true);
     expect(uv.label).toBe('5');
     expect(uv.category).toBe('Moderate');
-    expect(uv.advice!.length).toBeGreaterThan(5);
+    expect(uv.categoryLabel).toBe('Moderate');
+    expect(uv.advice).toBe('Wear sunscreen and sunglasses.');
     expect(uv.fraction).toBeCloseTo(5.2 / 11, 5);
   });
 
@@ -145,6 +156,7 @@ describe('buildDetails: UV index', () => {
       available: false,
       label: 'Unavailable',
       category: null,
+      categoryLabel: null,
       advice: null,
       value: null,
       fraction: 0,
@@ -219,16 +231,6 @@ describe('alerts', () => {
     severity,
   });
 
-  it('labels every severity in words, so colour is never the only signal', () => {
-    expect(SEVERITY_LABEL).toEqual({
-      extreme: 'Extreme',
-      severe: 'Severe',
-      moderate: 'Moderate',
-      minor: 'Minor',
-      unknown: 'Alert',
-    });
-  });
-
   it('sorts most severe first, then earliest start, without mutating the input', () => {
     const input = [
       alert('a', 'minor', 5),
@@ -261,5 +263,67 @@ describe('alerts', () => {
         period({ ...base, start: utc('2026-10-22T10:00:00Z'), end: utc('2026-10-23T10:00:00Z') }),
       ).toBe('Thursday 12:00 PM – Friday 12:00 PM');
     });
+  });
+});
+
+describe('buildDetails in French', () => {
+  const fr = { ...kmh, locale: 'fr-FR' };
+
+  it('speaks the wind in French, with the compass letters and "du/de l\'" forms', () => {
+    const { wind } = buildDetails(snapshot(), fr);
+    expect(wind).toMatchObject({
+      speedLabel: '12 km/h',
+      gustLabel: '22 km/h',
+      directionLabel: 'OSO',
+    });
+    expect(wind.a11yLabel).toBe("Vent 12 km/h de l'ouest-sud-ouest, rafales 22 km/h");
+    expect(buildDetails(snapshot(), { ...fr, windSpeedUnit: 'ms' }).wind.speedLabel).toBe(
+      '3,2 m/s',
+    );
+    expect(buildDetails(snapshot('missing-optionals'), fr).wind.a11yLabel).toBe('Vent 17 km/h');
+  });
+
+  it('formats humidity, pressure and visibility the French way', () => {
+    const model = buildDetails(snapshot(), fr);
+    expect(model.humidity).toEqual({ label: '48\u00a0%', value: 48 });
+    expect(model.pressure.label).toBe('1018 hPa');
+    expect(model.visibility).toEqual({ available: true, label: '10 km' });
+    expect(buildDetails(snapshot('missing-optionals'), fr).visibility.label).toBe('Indisponible');
+  });
+
+  it('names the UV category and advice in French but keeps the stable category id', () => {
+    const { uv } = buildDetails(snapshot(), fr);
+    expect(uv).toMatchObject({
+      category: 'Moderate',
+      categoryLabel: 'Modéré',
+      advice: 'Portez de la crème solaire et des lunettes de soleil.',
+    });
+    expect(buildDetails(snapshot('extreme-values'), fr).uv.categoryLabel).toBe('Extrême');
+    expect(buildDetails(snapshot('missing-optionals'), fr).uv.label).toBe('Indisponible');
+  });
+
+  it('shows sun times with the place zone and the French clock', () => {
+    const paris = buildDetails(snapshot('clear-day', 'Europe/Paris'), fr).sun;
+    expect(paris).toMatchObject({ sunriseLabel: '10:20', sunsetLabel: '22:20' });
+    const s = snapshot();
+    s.current.sunrise = 0;
+    s.current.sunset = 0;
+    expect(buildDetails(s, fr).sun.sunriseLabel).toBe('Indisponible');
+  });
+
+  it('writes the alert period with French day names and a 24-hour clock', () => {
+    const start = utc('2026-10-20T15:00:00Z');
+    const alert: WeatherAlert = {
+      id: 'x',
+      event: 'Vigilance orange',
+      sender: 'Météo-France',
+      description: '',
+      start,
+      end: utc('2026-10-21T03:00:00Z'),
+      severity: 'severe',
+    };
+    expect(alertPeriodLabel(alert, 'Europe/Paris', NOW, undefined, 'fr-FR')).toBe(
+      "Aujourd'hui 17:00 – Demain 5:00",
+    );
   });
 });

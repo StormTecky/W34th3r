@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { useLocale } from '@/lib/use-locale';
 import { spacing, typography } from '@/theme/tokens';
 import { useTheme } from '@/theme/use-theme';
 
@@ -19,6 +20,7 @@ export interface ScreenHeaderProps {
 export function ScreenHeader({ title, right, color }: ScreenHeaderProps) {
   const router = useRouter();
   const { colors } = useTheme();
+  const { messages } = useLocale();
   const ink = color ?? colors.text;
 
   const goBack = () => {
@@ -28,7 +30,7 @@ export function ScreenHeader({ title, right, color }: ScreenHeaderProps) {
 
   return (
     <View style={styles.row}>
-      <IconButton icon="chevron-left" label="Back" onPress={goBack} color={ink} />
+      <IconButton icon="chevron-left" label={messages.common.back} onPress={goBack} color={ink} />
       <Text accessibilityRole="header" style={[typography.title, styles.title, { color: ink }]}>
         {title}
       </Text>

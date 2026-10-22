@@ -4,6 +4,7 @@ import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { Place } from '@/domain/types';
+import { useLocale } from '@/lib/use-locale';
 import { radii, spacing, touch, typography } from '@/theme/tokens';
 import { useTheme } from '@/theme/use-theme';
 import { ScreenHeader } from '@/ui/ScreenHeader';
@@ -29,28 +30,40 @@ function TextButton({ label, onPress }: { label: string; onPress: () => void }) 
   );
 }
 
+/** The title, with an Edit/Done toggle once there is something to edit. */
+function PlacesHeader(props: { canEdit: boolean; editing: boolean; onToggle: () => void }) {
+  const { messages } = useLocale();
+  const label = props.editing ? messages.common.done : messages.common.edit;
+  const toggle = props.canEdit ? <TextButton label={label} onPress={props.onToggle} /> : null;
+  return <ScreenHeader title={messages.places.title} right={toggle} />;
+}
+
 function Footer({ empty, onSearch }: { empty: boolean; onSearch: () => void }) {
   const { colors } = useTheme();
+  const { messages } = useLocale();
+  const { emptyTitle, emptyBody } = messages.places;
   return (
     <View style={styles.footer}>
       {empty ? (
         <View style={styles.empty}>
-          <Text style={[typography.headline, { color: colors.text }]}>No saved places yet</Text>
+          <Text style={[typography.headline, { color: colors.text }]}>{emptyTitle}</Text>
           <Text style={[typography.body, styles.centered, { color: colors.textSecondary }]}>
-            Search for a city and tap the bookmark to keep it here.
+            {emptyBody}
           </Text>
         </View>
       ) : null}
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Search for a place"
+        accessibilityLabel={messages.common.searchForAPlace}
         onPress={onSearch}
         style={({ pressed }) => [
           styles.searchButton,
           { backgroundColor: colors.accentFill, opacity: pressed ? 0.8 : 1 },
         ]}
       >
-        <Text style={[typography.bodyStrong, { color: colors.onAccent }]}>Search for a place</Text>
+        <Text style={[typography.bodyStrong, { color: colors.onAccent }]}>
+          {messages.common.searchForAPlace}
+        </Text>
       </Pressable>
     </View>
   );
@@ -93,17 +106,17 @@ export function PlacesScreen() {
 
   const data: Entry[] = [null, ...places.places];
   const padding = { paddingTop: insets.top, paddingBottom: insets.bottom };
-  const editButton =
-    places.places.length > 0 ? (
-      <TextButton label={editing ? 'Done' : 'Edit'} onPress={() => setEditing((on) => !on)} />
-    ) : null;
 
   return (
     <View
       testID="places-screen"
       style={[styles.screen, { backgroundColor: colors.background }, padding]}
     >
-      <ScreenHeader title="Places" right={editButton} />
+      <PlacesHeader
+        canEdit={places.places.length > 0}
+        editing={editing}
+        onToggle={() => setEditing((on) => !on)}
+      />
       <FlatList
         testID="places-list"
         data={data}

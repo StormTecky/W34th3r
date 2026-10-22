@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 
 import type { WeatherSnapshot } from '@/domain/types';
 import { usePreferences } from '@/features/settings/use-preferences';
+import { useLocale } from '@/lib/use-locale';
 import { useNowSeconds } from '@/lib/use-now';
 import type { WeatherTheme } from '@/theme/theme-engine';
 import { spacing } from '@/theme/tokens';
@@ -20,10 +21,17 @@ export interface ForecastSectionsProps {
 export function ForecastSections({ snapshot, theme }: ForecastSectionsProps) {
   const { preferences } = usePreferences();
   const now = useNowSeconds();
+  const { locale } = useLocale();
   const units = preferences.temperatureUnit;
 
-  const hourly = useMemo(() => buildHourlyRows(snapshot, { units, now }), [snapshot, units, now]);
-  const daily = useMemo(() => buildDailyRows(snapshot, { units, now }), [snapshot, units, now]);
+  const hourly = useMemo(
+    () => buildHourlyRows(snapshot, { units, now, locale }),
+    [snapshot, units, now, locale],
+  );
+  const daily = useMemo(
+    () => buildDailyRows(snapshot, { units, now, locale }),
+    [snapshot, units, now, locale],
+  );
 
   return (
     <View style={styles.sections}>

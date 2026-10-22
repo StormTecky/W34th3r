@@ -4,6 +4,7 @@ import { weatherQueryKey } from '@/data/query-client';
 import { freshnessOf, type Freshness } from '@/domain/freshness';
 import type { WeatherSnapshot } from '@/domain/types';
 import { log } from '@/lib/logger';
+import { useLocale } from '@/lib/use-locale';
 import { useNowSeconds } from '@/lib/use-now';
 import { useWeatherProvider } from '@/providers/provider-context';
 import {
@@ -36,12 +37,13 @@ function kindOf(error: unknown): ProviderErrorKind {
 export function useWeather(place: WeatherTarget | null): UseWeatherResult {
   const provider = useWeatherProvider();
   const now = useNowSeconds();
+  const { locale, language } = useLocale();
 
   const query = useQuery({
-    queryKey: weatherQueryKey(place?.id ?? 'none'),
+    queryKey: weatherQueryKey(place?.id ?? 'none', language),
     queryFn: async ({ signal }) => {
       try {
-        return await provider.getWeather(place!, { signal });
+        return await provider.getWeather(place!, { signal, locale });
       } catch (error) {
         if (error instanceof Error && error.name !== 'AbortError') {
           log.warn('Weather fetch failed', { placeId: place?.id, kind: kindOf(error) });

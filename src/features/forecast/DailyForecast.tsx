@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
+import { useLocale } from '@/lib/use-locale';
 import type { WeatherTheme } from '@/theme/theme-engine';
 import { spacing, typography } from '@/theme/tokens';
 import { temperatureColor } from '@/theme/temperature-color';
@@ -67,9 +68,10 @@ function DailyRowView({
 
 /** The next 7 days: day, condition, chance of precipitation, and the temperature range. */
 export function DailyForecast({ rows, theme }: DailyForecastProps) {
+  const { messages } = useLocale();
   if (rows.length === 0) return null;
   return (
-    <ForecastCard title="7-day forecast" icon="calendar" theme={theme}>
+    <ForecastCard title={messages.forecast.dailyTitle} icon="calendar" theme={theme}>
       {rows.map((row, index) => (
         <DailyRowView key={row.key} row={row} first={index === 0} theme={theme} />
       ))}

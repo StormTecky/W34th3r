@@ -1,5 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 
+import type { Messages } from '@/domain/messages';
+import { useLocale } from '@/lib/use-locale';
 import { radii, spacing, typography } from '@/theme/tokens';
 
 import type { UvDetails } from './details-view-model';
@@ -13,19 +15,23 @@ export interface UVMeterProps {
 
 const BAND_OPACITY = [0.25, 0.4, 0.55, 0.75, 1];
 
-function spoken(uv: UvDetails): string {
-  if (!uv.available) return 'UV index unavailable';
-  return `UV index ${uv.label}, ${uv.category}. ${uv.advice}`;
+function spoken(uv: UvDetails, { details }: Messages): string {
+  const { categoryLabel, advice } = uv;
+  if (!uv.available || categoryLabel === null || advice === null) return details.uvUnavailable;
+  return details.uvSpoken(uv.label, categoryLabel, advice);
 }
 
 /** UV index as a number and a word, with a five-band scale and a marker. */
 export function UVMeter({ uv, color, secondaryColor, accentColor }: UVMeterProps) {
+  const { messages } = useLocale();
   return (
-    <View accessible accessibilityLabel={spoken(uv)} style={styles.container}>
+    <View accessible accessibilityLabel={spoken(uv, messages)} style={styles.container}>
       <Text style={[uv.available ? typography.numeral : typography.headline, { color }]}>
         {uv.label}
       </Text>
-      {uv.category ? <Text style={[typography.bodyStrong, { color }]}>{uv.category}</Text> : null}
+      {uv.categoryLabel ? (
+        <Text style={[typography.bodyStrong, { color }]}>{uv.categoryLabel}</Text>
+      ) : null}
       {uv.available ? (
         <View style={styles.scale}>
           <View style={styles.bands}>

@@ -3,6 +3,7 @@ import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { Place } from '@/domain/types';
+import { useLocale } from '@/lib/use-locale';
 import { radii, spacing, touch, typography } from '@/theme/tokens';
 import { useTheme } from '@/theme/use-theme';
 import { ErrorState } from '@/ui/ErrorState';
@@ -36,13 +37,14 @@ interface ResultsProps {
 }
 
 function Results({ search, isSaved, onOpen, onToggleSave }: ResultsProps) {
+  const { messages } = useLocale();
   if (search.errorKind) return <ErrorState kind={search.errorKind} onRetry={search.retry} />;
-  if (search.query === '') return <Message title="Search for a city or place." />;
+  if (search.query === '') return <Message title={messages.search.prompt} />;
   if (search.results.length === 0) {
     return search.hasSearched ? (
-      <Message title="No places found" hint="Check the spelling, or try a nearby city." />
+      <Message title={messages.search.noResults} hint={messages.search.noResultsHint} />
     ) : (
-      <Message title="Searching…" />
+      <Message title={messages.search.searching} />
     );
   }
   return (
@@ -64,13 +66,14 @@ function Results({ search, isSaved, onOpen, onToggleSave }: ResultsProps) {
 
 function SearchField({ value, onChange }: { value: string; onChange: (text: string) => void }) {
   const { colors } = useTheme();
+  const { messages } = useLocale();
   return (
     <View
       style={[styles.field, { backgroundColor: colors.surface, borderColor: colors.controlBorder }]}
     >
       <TextInput
-        accessibilityLabel="Search for a place"
-        placeholder="City or place"
+        accessibilityLabel={messages.common.searchForAPlace}
+        placeholder={messages.search.placeholder}
         placeholderTextColor={colors.textSecondary}
         value={value}
         onChangeText={onChange}
@@ -83,7 +86,7 @@ function SearchField({ value, onChange }: { value: string; onChange: (text: stri
       {value.length > 0 ? (
         <IconButton
           icon="close"
-          label="Clear search"
+          label={messages.search.clear}
           color={colors.textSecondary}
           onPress={() => onChange('')}
         />
@@ -95,6 +98,7 @@ function SearchField({ value, onChange }: { value: string; onChange: (text: stri
 /** Search for a place by name; open a result or save it for later. */
 export function SearchScreen() {
   const { colors } = useTheme();
+  const { messages } = useLocale();
   const insets = useSafeAreaInsets();
   const [input, setInput] = useState('');
   const search = usePlaceSearch(input);
@@ -110,7 +114,7 @@ export function SearchScreen() {
       testID="search-screen"
       style={[styles.screen, { backgroundColor: colors.background }, padding]}
     >
-      <ScreenHeader title="Search" />
+      <ScreenHeader title={messages.common.search} />
       <SearchField value={input} onChange={setInput} />
       <View style={styles.results}>
         <Results

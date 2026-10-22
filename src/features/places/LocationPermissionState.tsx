@@ -1,9 +1,11 @@
 import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import type { LocationPromptVariant } from '@/domain/messages';
+import { useLocale } from '@/lib/use-locale';
 import { radii, spacing, touch, typography } from '@/theme/tokens';
 import type { WeatherTheme } from '@/theme/theme-engine';
 
-export type LocationPermissionVariant = 'undetermined' | 'denied' | 'unavailable';
+export type LocationPermissionVariant = LocationPromptVariant;
 
 export interface LocationPermissionStateProps {
   variant: LocationPermissionVariant;
@@ -15,21 +17,6 @@ export interface LocationPermissionStateProps {
   /** Opens place search. Omitted until search exists, in which case no button is shown. */
   onSearch?: () => void;
 }
-
-const COPY: Record<LocationPermissionVariant, { title: string; body: string }> = {
-  undetermined: {
-    title: 'See the weather where you are',
-    body: 'W34th3r uses your location only to fetch the weather for where you are.',
-  },
-  denied: {
-    title: 'Location is off',
-    body: 'Turn on location access in Settings to see the weather where you are.',
-  },
-  unavailable: {
-    title: "We couldn't find your location",
-    body: 'Check that location services are turned on, then try again.',
-  },
-};
 
 interface ActionProps {
   label: string;
@@ -67,7 +54,8 @@ export function LocationPermissionState({
   onRetry,
   onSearch,
 }: LocationPermissionStateProps) {
-  const { title, body } = COPY[variant];
+  const { messages } = useLocale();
+  const { title, body } = messages.places.permission[variant];
 
   return (
     <View style={styles.container}>
@@ -80,20 +68,22 @@ export function LocationPermissionState({
       <Text style={[typography.body, styles.centered, { color: theme.textSecondary }]}>{body}</Text>
       <View style={styles.actions}>
         {variant === 'undetermined' && onAllow ? (
-          <Action primary label="Use my location" onPress={onAllow} theme={theme} />
+          <Action primary label={messages.places.useMyLocation} onPress={onAllow} theme={theme} />
         ) : null}
         {variant === 'denied' ? (
           <Action
             primary
-            label="Open Settings"
+            label={messages.places.openSettings}
             onPress={() => void Linking.openSettings()}
             theme={theme}
           />
         ) : null}
         {variant === 'unavailable' && onRetry ? (
-          <Action primary label="Try again" onPress={onRetry} theme={theme} />
+          <Action primary label={messages.common.tryAgain} onPress={onRetry} theme={theme} />
         ) : null}
-        {onSearch ? <Action label="Search for a place" onPress={onSearch} theme={theme} /> : null}
+        {onSearch ? (
+          <Action label={messages.common.searchForAPlace} onPress={onSearch} theme={theme} />
+        ) : null}
       </View>
     </View>
   );

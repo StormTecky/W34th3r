@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react-native';
 
+import { LocaleProvider } from '@/lib/use-locale';
 import { SunArc } from '@/features/details/SunArc';
 import { UVMeter } from '@/features/details/UVMeter';
 import { WindCompass } from '@/features/details/WindCompass';
@@ -67,6 +68,7 @@ describe('UVMeter', () => {
     available: true,
     label: '5',
     category: 'Moderate' as const,
+    categoryLabel: 'Moderate',
     advice: 'Wear sunscreen and sunglasses.',
     value: 5.2,
     fraction: 5.2 / 11,
@@ -75,6 +77,7 @@ describe('UVMeter', () => {
     available: false,
     label: 'Unavailable',
     category: null,
+    categoryLabel: null,
     advice: null,
     value: null,
     fraction: 0,
@@ -84,7 +87,14 @@ describe('UVMeter', () => {
     ['a typical value', available],
     [
       'an extreme value',
-      { ...available, label: '15', category: 'Extreme' as const, value: 15.2, fraction: 1 },
+      {
+        ...available,
+        label: '15',
+        category: 'Extreme' as const,
+        categoryLabel: 'Extreme',
+        value: 15.2,
+        fraction: 1,
+      },
     ],
     ['no data', unavailable],
   ])('renders %s', async (_label, uv) => {
@@ -149,5 +159,92 @@ describe('SunArc', () => {
   it('describes missing sun events', async () => {
     await render(<SunArc sun={none} {...colors} />);
     expect(screen.getByLabelText('Sunrise and sunset unavailable')).toBeTruthy();
+  });
+});
+
+describe('in French', () => {
+  const french = (ui: React.ReactElement) =>
+    render(<LocaleProvider locale="fr-FR">{ui}</LocaleProvider>);
+
+  it('labels the gust in French', async () => {
+    await french(
+      <WindCompass
+        wind={{
+          speedLabel: '12 km/h',
+          gustLabel: '22 km/h',
+          directionLabel: 'OSO',
+          degrees: 250,
+          a11yLabel: 'Vent',
+        }}
+        {...colors}
+      />,
+    );
+    expect(screen.getByText('Rafales 22 km/h')).toBeTruthy();
+    expect(screen.queryByText(/Gusts/)).toBeNull();
+  });
+
+  it('reads the UV index aloud in French and shows the French category', async () => {
+    await french(
+      <UVMeter
+        uv={{
+          available: true,
+          label: '5',
+          category: 'Moderate',
+          categoryLabel: 'Modéré',
+          advice: 'Portez de la crème solaire et des lunettes de soleil.',
+          value: 5.2,
+          fraction: 5.2 / 11,
+        }}
+        {...colors}
+      />,
+    );
+    expect(screen.getByText('Modéré')).toBeTruthy();
+    expect(
+      screen.getByLabelText(
+        'Indice UV 5, Modéré. Portez de la crème solaire et des lunettes de soleil.',
+      ),
+    ).toBeTruthy();
+  });
+
+  it('says the UV index is unavailable in French', async () => {
+    await french(
+      <UVMeter
+        uv={{
+          available: false,
+          label: 'Indisponible',
+          category: null,
+          categoryLabel: null,
+          advice: null,
+          value: null,
+          fraction: 0,
+        }}
+        {...colors}
+      />,
+    );
+    expect(screen.getByLabelText('Indice UV indisponible')).toBeTruthy();
+  });
+
+  it('reads the sun times aloud in French', async () => {
+    const sun = {
+      available: true,
+      sunriseLabel: '7:42',
+      sunsetLabel: '18:15',
+      progress: 0.4,
+      isDay: true,
+    };
+    await french(<SunArc sun={sun} {...colors} />);
+    expect(screen.getByLabelText('Lever du soleil 7:42, coucher 18:15')).toBeTruthy();
+  });
+
+  it('describes missing sun events in French', async () => {
+    const sun = {
+      available: false,
+      sunriseLabel: 'Indisponible',
+      sunsetLabel: 'Indisponible',
+      progress: 0,
+      isDay: true,
+    };
+    await french(<SunArc sun={sun} {...colors} />);
+    expect(screen.getByLabelText('Lever et coucher du soleil indisponibles')).toBeTruthy();
   });
 });

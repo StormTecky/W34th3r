@@ -15,6 +15,7 @@ import {
   usePreferences,
 } from '@/features/settings/use-preferences';
 import { log } from '@/lib/logger';
+import { LocaleProvider, useDeviceLocale } from '@/lib/use-locale';
 import { createDefaultProvider, WeatherProviderProvider } from '@/providers/provider-context';
 import type { WeatherProvider } from '@/providers/weather-provider';
 import { spacing, typography } from '@/theme/tokens';
@@ -81,6 +82,7 @@ export default function RootLayout() {
   const providerResult = useMemo(() => createProvider(), []);
   const preferencesStore = getAppPreferencesStore();
   const storesReady = useStoresReady();
+  const locale = useDeviceLocale();
   useForegroundRefetch();
 
   if (!fontsReady || !storesReady) return null;
@@ -89,15 +91,17 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
-        <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
-          <WeatherProviderProvider provider={providerResult.provider}>
-            <PreferencesProvider store={preferencesStore}>
-              <PlacesProvider store={getAppPlacesStore()}>
-                <ThemedStack />
-              </PlacesProvider>
-            </PreferencesProvider>
-          </WeatherProviderProvider>
-        </PersistQueryClientProvider>
+        <LocaleProvider locale={locale}>
+          <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
+            <WeatherProviderProvider provider={providerResult.provider}>
+              <PreferencesProvider store={preferencesStore}>
+                <PlacesProvider store={getAppPlacesStore()}>
+                  <ThemedStack />
+                </PlacesProvider>
+              </PreferencesProvider>
+            </WeatherProviderProvider>
+          </PersistQueryClientProvider>
+        </LocaleProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );
