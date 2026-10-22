@@ -179,3 +179,39 @@ describe('unexpected formatter failures', () => {
     expect(() => formatHourLabel(0, 'Africa/Nairobi', 'sv-SE')).toThrow(TypeError);
   });
 });
+
+describe('French dates and times', () => {
+  const noon = utc('2026-10-22T12:42:00Z');
+
+  it('writes hours the French way', () => {
+    expect(formatHourLabel(noon, 'Europe/Paris', 'fr-FR')).toBe('14 h');
+    expect(formatHourLabel(noon, 'Europe/Paris', 'en-GB')).toBe('14');
+  });
+
+  it('writes clock times with the region conventions', () => {
+    expect(formatClockTime(noon, 'Europe/Paris', 'fr-FR')).toBe('14:42');
+    expect(formatClockTime(noon, 'America/Montreal', 'fr-CA')).toBe('8 h 42');
+    expect(formatClockTime(noon, 'Europe/London', 'en-GB')).toBe('13:42');
+  });
+
+  it('capitalises weekday names, which French writes in lower case', () => {
+    expect(formatWeekday(noon, 'Europe/Paris', 'fr-FR')).toBe('Jeudi');
+    expect(formatWeekday(noon, 'Europe/Paris')).toBe('Thursday');
+  });
+
+  it('says Aujourd’hui, Demain, then the weekday', () => {
+    const now = utc('2026-10-20T15:00:00Z');
+    const tz = 'Europe/Paris';
+    expect(relativeDayLabel(utc('2026-10-20T16:00:00Z'), now, tz, 'fr-FR')).toBe("Aujourd'hui");
+    expect(relativeDayLabel(utc('2026-10-21T16:00:00Z'), now, tz, 'fr-FR')).toBe('Demain');
+    expect(relativeDayLabel(utc('2026-10-23T16:00:00Z'), now, tz, 'fr-FR')).toBe('Vendredi');
+  });
+
+  it('formats through the provider offset when the zone is rejected', () => {
+    expect(formatClockTime(noon, 'Not/AZone', 'fr-FR', 7200)).toBe('14:42');
+  });
+
+  it('keeps the calendar day key independent of the locale', () => {
+    expect(dayKey(noon, 'Europe/Paris')).toBe('2026-10-22');
+  });
+});

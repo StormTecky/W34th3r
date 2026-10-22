@@ -40,3 +40,22 @@ describe('formatAge', () => {
     expect(formatAge(FETCHED, FETCHED + age)).toBe(expected);
   });
 });
+
+describe('formatAge in French', () => {
+  it.each([
+    [0, "Mis à jour à l'instant"],
+    [59, "Mis à jour à l'instant"],
+    [60, 'Mis à jour il y a 1 min'],
+    [5 * 60 + 30, 'Mis à jour il y a 5 min'],
+    [3600, 'Mis à jour il y a 1 h'],
+    [3 * 3600 + 1200, 'Mis à jour il y a 3 h'],
+    [86_400, 'Mis à jour il y a 1 j'],
+    [3 * 86_400 + 5000, 'Mis à jour il y a 3 j'],
+  ])('after %i seconds says "%s"', (age, expected) => {
+    expect(formatAge(FETCHED, FETCHED + age, 'fr-FR')).toBe(expected);
+  });
+
+  it('uses English for a language the app does not translate', () => {
+    expect(formatAge(FETCHED, FETCHED + 300, 'de-DE')).toBe('Updated 5 min ago');
+  });
+});

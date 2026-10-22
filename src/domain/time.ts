@@ -1,9 +1,11 @@
 /**
  * Place-local time formatting. Everything is expressed in the viewed place's IANA time zone, never
- * the device's. If the runtime rejects the zone we fall back to the provider's UTC offset.
+ * the device's. If the runtime rejects the zone we fall back to the provider's UTC offset. Words
+ * and number formats follow `locale`, a BCP 47 tag such as "fr-FR".
  */
 
-const DEFAULT_LOCALE = 'en-US';
+import { DEFAULT_LOCALE } from './locale';
+import { messagesFor } from './messages';
 
 const formatterCache = new Map<string, Intl.DateTimeFormat>();
 
@@ -81,14 +83,15 @@ export function formatClockTime(
   });
 }
 
-/** e.g. "Tuesday" */
+/** e.g. "Tuesday" or "Mardi" (capitalised, as French writes weekdays in lower case). */
 export function formatWeekday(
   epochSeconds: number,
   timeZone: string,
   locale: string = DEFAULT_LOCALE,
   offsetSeconds?: number,
 ): string {
-  return format(epochSeconds, timeZone, offsetSeconds, locale, { weekday: 'long' });
+  const name = format(epochSeconds, timeZone, offsetSeconds, locale, { weekday: 'long' });
+  return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
 /** Local calendar date in the place's zone as "YYYY-MM-DD". */
@@ -117,8 +120,9 @@ export function relativeDayLabel(
   const diff =
     dayNumber(dayKey(epochSeconds, timeZone, offsetSeconds)) -
     dayNumber(dayKey(nowSeconds, timeZone, offsetSeconds));
-  if (diff === 0) return 'Today';
-  if (diff === 1) return 'Tomorrow';
+  const { today, tomorrow } = messagesFor(locale).time;
+  if (diff === 0) return today;
+  if (diff === 1) return tomorrow;
   return formatWeekday(epochSeconds, timeZone, locale, offsetSeconds);
 }
 

@@ -1,3 +1,6 @@
+import { DEFAULT_LOCALE } from './locale';
+import { messagesFor } from './messages';
+
 /** Weather data older than this is stale and should be refetched. */
 export const STALE_AFTER_SECONDS = 15 * 60;
 
@@ -13,10 +16,15 @@ export function freshnessOf(fetchedAt: number, nowSeconds: number): Freshness {
 }
 
 /** "Updated just now", "Updated 5 min ago", "Updated 3 h ago", "Updated 2 d ago". */
-export function formatAge(fetchedAt: number, nowSeconds: number): string {
+export function formatAge(
+  fetchedAt: number,
+  nowSeconds: number,
+  locale: string = DEFAULT_LOCALE,
+): string {
   const age = ageSeconds(fetchedAt, nowSeconds);
-  if (age < 60) return 'Updated just now';
-  if (age < 3600) return `Updated ${Math.floor(age / 60)} min ago`;
-  if (age < 86_400) return `Updated ${Math.floor(age / 3600)} h ago`;
-  return `Updated ${Math.floor(age / 86_400)} d ago`;
+  const text = messagesFor(locale).freshness;
+  if (age < 60) return text.justNow;
+  if (age < 3600) return text.minutesAgo(Math.floor(age / 60));
+  if (age < 86_400) return text.hoursAgo(Math.floor(age / 3600));
+  return text.daysAgo(Math.floor(age / 86_400));
 }

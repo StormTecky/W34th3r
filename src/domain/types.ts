@@ -101,6 +101,9 @@ export interface DailyForecastEntry extends ForecastEntryBase {
 export const ALERT_SEVERITIES = ['minor', 'moderate', 'severe', 'extreme', 'unknown'] as const;
 export type AlertSeverity = (typeof ALERT_SEVERITIES)[number];
 
+/** WHO UV index categories. The names are stable identifiers; the words shown come from messages. */
+export type UvCategory = 'Low' | 'Moderate' | 'High' | 'Very high' | 'Extreme';
+
 export interface WeatherAlert {
   /** Derived from sender + event + start for stable keys. */
   id: string;
