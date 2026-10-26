@@ -17,7 +17,7 @@ export function SunRays({ size }: ArtProps) {
   return (
     <Svg width={size} height={size} viewBox="0 0 200 200">
       {RAY_ANGLES.map((angle) => (
-        <G key={angle} rotation={angle} origin="100, 100">
+        <G key={angle} transform={`rotate(${angle} 100 100)`}>
           <Line
             x1={100}
             y1={6}

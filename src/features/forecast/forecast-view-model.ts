@@ -17,10 +17,16 @@ export interface HourlyRow {
   start: number;
   /** "Now" for the first entry (in the locale's language), otherwise the place-local hour. */
   timeLabel: string;
+  /** "Now", or the day and hour, e.g. "Tomorrow 12 AM". Names a moment for the time-travel bar. */
+  dayTimeLabel: string;
   temperatureLabel: string;
+  /** Degrees C. */
+  temperature: number;
   condition: ConditionCategory;
   isDay: boolean;
   summary: string;
+  /** Percent, 0-100. */
+  precipChance: number;
   /** Shown from 10 percent upward; null hides negligible chances. */
   precipLabel: string | null;
   a11yLabel: string;
@@ -63,7 +69,13 @@ export function buildHourlyRows(snapshot: WeatherSnapshot, options: ForecastOpti
       key: String(entry.start),
       start: entry.start,
       timeLabel,
+      dayTimeLabel:
+        index === 0
+          ? timeLabel
+          : `${relativeDayLabel(entry.start, options.now, timeZone, locale, timeZoneOffset)} ${timeLabel}`,
       temperatureLabel: formatTemperature(entry.temperature, options.units),
+      temperature: entry.temperature,
+      precipChance: entry.precipChance,
       condition: entry.condition,
       isDay: isDayForInstant(entry.start, current.sunrise, current.sunset),
       summary: entry.summary,

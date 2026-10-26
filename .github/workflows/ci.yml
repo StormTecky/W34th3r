@@ -18,8 +18,6 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run test:coverage
-        env:
-          EXPO_PUBLIC_USE_FAKE_PROVIDER: '1'
       # Fails on critical findings. The known high-severity advisories (braces, node-forge) are in
       # build tooling, have no upstream fix yet, and are listed in README.md under "Security".
       - run: npm audit --omit=dev --audit-level=critical

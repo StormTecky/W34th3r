@@ -20,7 +20,7 @@ const CENTER = SIZE / 2;
 function Arrow({ degrees, color }: { degrees: number; color: string }) {
   // Meteorological degrees say where the wind comes from; the arrow points where it goes.
   return (
-    <G rotation={degrees + 180} origin={`${CENTER}, ${CENTER}`}>
+    <G transform={`rotate(${degrees + 180} ${CENTER} ${CENTER})`}>
       <Line
         x1={CENTER}
         y1={20}
@@ -59,7 +59,7 @@ function Dial({
           fill="none"
         />
         {[0, 90, 180, 270].map((angle) => (
-          <G key={angle} rotation={angle} origin={`${CENTER}, ${CENTER}`}>
+          <G key={angle} transform={`rotate(${angle} ${CENTER} ${CENTER})`}>
             <Line x1={CENTER} y1={4} x2={CENTER} y2={10} stroke={secondaryColor} strokeWidth={2} />
           </G>
         ))}

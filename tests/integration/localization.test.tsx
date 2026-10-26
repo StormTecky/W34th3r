@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react-native';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react-native';
 import * as Location from 'expo-location';
 
 import { weatherQueryKey } from '@/data/query-client';
@@ -105,7 +105,9 @@ describe('Home in French', () => {
     await hero();
     expect(screen.getByRole('header', { name: 'Prévisions horaires' })).toBeTruthy();
     expect(screen.getByRole('header', { name: 'Prévisions à 7 jours' })).toBeTruthy();
-    expect(screen.getByText('Maintenant')).toBeTruthy();
+    // The time-travel handle also reads "Maintenant"; look in the hourly list.
+    const firstHour = screen.getAllByTestId('hourly-row')[0]!;
+    expect(within(firstHour).getByText('Maintenant')).toBeTruthy();
     expect(screen.getByText("Aujourd'hui")).toBeTruthy();
     expect(screen.getByText('Demain')).toBeTruthy();
     expect(screen.getByText('15 h')).toBeTruthy();
@@ -155,7 +157,8 @@ describe('Home in French', () => {
       scenario: 'clear-day',
     });
     await hero();
-    expect(screen.getByText('Now')).toBeTruthy();
+    // The time-travel handle also reads "Now"; look in the hourly list.
+    expect(within(screen.getAllByTestId('hourly-row')[0]!).getByText('Now')).toBeTruthy();
     expect(screen.getByText('15')).toBeTruthy();
   });
 

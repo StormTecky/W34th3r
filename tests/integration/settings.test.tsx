@@ -3,6 +3,7 @@ import * as Location from 'expo-location';
 import * as ReactNative from 'react-native';
 import { StyleSheet } from 'react-native';
 
+import * as env from '@/config/env';
 import { colors } from '@/theme/tokens';
 
 import HomeScreen from '../../app/index';
@@ -128,11 +129,35 @@ describe('the settings screen', () => {
 });
 
 describe('weather data credit', () => {
-  it('credits Open-Meteo, the default provider, as its licence requires', async () => {
+  // The credit depends on the configured provider, so each case sets it instead of trusting the
+  // environment the tests happen to run in (CI exports EXPO_PUBLIC_* variables).
+  const withProvider = (provider: 'open-meteo' | 'openweather' | 'fake') =>
+    jest.spyOn(env, 'getConfig').mockReturnValue({
+      provider,
+      apiKey: provider === 'openweather' ? 'k' : null,
+      baseUrl: 'https://api.openweathermap.org',
+      requestTimeoutMs: 10_000,
+    });
+
+  it('credits Open-Meteo, as its licence requires', async () => {
+    withProvider('open-meteo');
     await renderSettings();
     expect(screen.getByTestId('attribution').props.children).toMatch(
       /Open-Meteo\.com \(CC BY 4\.0\)/,
     );
+    expect(screen.getByTestId('attribution').props.children).toMatch(/BigDataCloud/);
+  });
+
+  it('credits OpenWeather when that provider is used', async () => {
+    withProvider('openweather');
+    await renderSettings();
+    expect(screen.getByTestId('attribution').props.children).toBe('Weather data by OpenWeather.');
+  });
+
+  it('shows no credit for the fake provider', async () => {
+    withProvider('fake');
+    await renderSettings();
+    expect(screen.queryByTestId('attribution')).toBeNull();
   });
 });
 

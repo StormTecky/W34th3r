@@ -100,6 +100,29 @@ describe('buildHourlyRows', () => {
   });
 });
 
+describe('buildHourlyRows: moment fields for the time-travel bar', () => {
+  it('keeps the numeric temperature and precipitation chance of each hour', () => {
+    const [first] = buildHourlyRows(paris, options);
+    expect(first?.temperature).toBe(paris.hourly[0]!.temperature);
+    expect(first?.precipChance).toBe(paris.hourly[0]!.precipChance);
+  });
+
+  it('labels each hour with its day, in the place time zone', () => {
+    const rows = buildHourlyRows(paris, options);
+    expect(rows[0]?.dayTimeLabel).toBe('Now');
+    expect(rows[1]?.dayTimeLabel).toBe('Today 3 PM');
+    // 24 hours in Paris crosses midnight (UTC+2): 22:00 UTC is 12 AM tomorrow.
+    const midnight = rows.find((row) => row.timeLabel === '12 AM');
+    expect(midnight?.dayTimeLabel).toBe('Tomorrow 12 AM');
+  });
+
+  it('judges the day on the place calendar, not the device one', () => {
+    const ny = snapshotAt('2026-10-21T03:30:00Z', 'America/New_York');
+    const rows = buildHourlyRows(ny, { units: 'c', now: utc('2026-10-21T03:30:00Z') });
+    expect(rows[1]?.dayTimeLabel).toBe('Tomorrow 12 AM');
+  });
+});
+
 describe('buildDailyRows', () => {
   it('returns seven rows labelled Today, Tomorrow, then weekday names', () => {
     const rows = buildDailyRows(paris, options);

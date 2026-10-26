@@ -1094,7 +1094,7 @@ exports[`WindCompass renders a gale from the north 1`] = `
             [
               1,
               0,
-              -0,
+              0,
               1,
               0,
               0,
@@ -1462,7 +1462,7 @@ exports[`WindCompass renders a typical westerly 1`] = `
             [
               1,
               0,
-              -0,
+              0,
               1,
               0,
               0,
@@ -1830,7 +1830,7 @@ exports[`WindCompass renders calm air with no direction 1`] = `
             [
               1,
               0,
-              -0,
+              0,
               1,
               0,
               0,

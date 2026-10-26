@@ -69,6 +69,9 @@ export interface Messages {
     highLow(high: string, low: string): string;
     spokenFeelsLike(value: string): string;
     spokenHighLow(high: string, low: string): string;
+    /** Chips for another time on the time-travel bar, from an already formatted percentage. */
+    rainChance(percent: string): string;
+    snowChance(percent: string): string;
   };
   forecast: {
     hourlyTitle: string;
@@ -76,6 +79,9 @@ export interface Messages {
     high(value: string): string;
     low(value: string): string;
     precipChance(percent: number): string;
+    /** The time-travel bar: its accessible name, and the button that returns to the current hour. */
+    timeOfDay: string;
+    backToNow: string;
   };
   details: {
     titles: {

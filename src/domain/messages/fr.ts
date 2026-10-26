@@ -75,6 +75,8 @@ export const fr: Messages = {
     highLow: (high, low) => `Max. ${high}  Min. ${low}`,
     spokenFeelsLike: (value) => `Ressenti ${value} degrés`,
     spokenHighLow: (high, low) => `Maximum ${high}, minimum ${low}`,
+    rainChance: (percent) => `Risque de pluie ${percent}`,
+    snowChance: (percent) => `Risque de neige ${percent}`,
   },
   forecast: {
     hourlyTitle: 'Prévisions horaires',
@@ -82,6 +84,8 @@ export const fr: Messages = {
     high: (value) => `maximum ${value}`,
     low: (value) => `minimum ${value}`,
     precipChance: (percent) => `${percent} pour cent de risque de précipitations`,
+    timeOfDay: 'Heure de la journée',
+    backToNow: 'Revenir à maintenant',
   },
   details: {
     titles: {

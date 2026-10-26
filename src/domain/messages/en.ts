@@ -72,6 +72,8 @@ export const en: Messages = {
     highLow: (high, low) => `H:${high}  L:${low}`,
     spokenFeelsLike: (value) => `Feels like ${value} degrees`,
     spokenHighLow: (high, low) => `High ${high}, low ${low}`,
+    rainChance: (percent) => `Rain chance ${percent}`,
+    snowChance: (percent) => `Snow chance ${percent}`,
   },
   forecast: {
     hourlyTitle: 'Hourly forecast',
@@ -79,6 +81,8 @@ export const en: Messages = {
     high: (value) => `high ${value}`,
     low: (value) => `low ${value}`,
     precipChance: (percent) => `${percent} percent chance of precipitation`,
+    timeOfDay: 'Time of day',
+    backToNow: 'Back to now',
   },
   details: {
     titles: {
