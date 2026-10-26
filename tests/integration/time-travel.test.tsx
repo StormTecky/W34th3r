@@ -140,6 +140,15 @@ describe('travelling in time', () => {
     expect(screen.queryByText(/Rain chance/)).toBeNull();
   });
 
+  it('speaks French: the bar, the way back and the chance of rain', async () => {
+    await renderHome({ locale: 'fr-FR', scenario: 'rain-day' });
+    expect(bar().props.accessibilityLabel).toBe('Heure de la journée');
+    await step('increment');
+    expect(screen.getByText(/^Risque de pluie \d+ %$/)).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Revenir à maintenant' })).toBeTruthy();
+    expect(screen.getByLabelText(/^Paris\. \d+ degrés\. /)).toBeTruthy();
+  });
+
   it('follows the preferred temperature unit', async () => {
     await renderHome({ regionCode: 'US' });
     await step('increment');

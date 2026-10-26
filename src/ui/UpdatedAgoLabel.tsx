@@ -1,6 +1,7 @@
 import { StyleSheet, Text } from 'react-native';
 
 import { formatAge, freshnessOf } from '@/domain/freshness';
+import { useLocale } from '@/lib/use-locale';
 import { useNowSeconds } from '@/lib/use-now';
 import { typography } from '@/theme/tokens';
 import { useTheme } from '@/theme/use-theme';
@@ -20,10 +21,11 @@ export interface UpdatedAgoLabelProps {
 export function UpdatedAgoLabel({ fetchedAt, now, always = false, color }: UpdatedAgoLabelProps) {
   const liveNow = useNowSeconds();
   const { colors } = useTheme();
+  const { locale } = useLocale();
   const current = now ?? liveNow;
   if (!always && freshnessOf(fetchedAt, current) === 'fresh') return null;
 
-  const text = formatAge(fetchedAt, current);
+  const text = formatAge(fetchedAt, current, locale);
   return (
     <Text
       accessibilityLabel={text}

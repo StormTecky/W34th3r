@@ -1,5 +1,6 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { useLocale } from '@/lib/use-locale';
 import type { WeatherTheme } from '@/theme/theme-engine';
 import { spacing, typography } from '@/theme/tokens';
 import { ConditionIcon } from '@/ui/ConditionIcon';
@@ -14,9 +15,10 @@ export interface HourlyForecastProps {
 
 /** The next 24 hours as a horizontally scrolling strip. */
 export function HourlyForecast({ rows, theme }: HourlyForecastProps) {
+  const { messages } = useLocale();
   if (rows.length === 0) return null;
   return (
-    <ForecastCard title="Hourly forecast" icon="clock" theme={theme}>
+    <ForecastCard title={messages.forecast.hourlyTitle} icon="clock" theme={theme}>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}

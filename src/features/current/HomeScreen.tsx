@@ -16,6 +16,7 @@ import { useCurrentPlace } from '@/features/places/use-current-place';
 import { useDeviceLocation } from '@/features/places/use-device-location';
 import { usePlaces } from '@/features/places/use-places';
 import { usePreferences } from '@/features/settings/use-preferences';
+import { useLocale } from '@/lib/use-locale';
 import { ConditionBackground } from '@/theme/ConditionBackground';
 import { getTheme, type WeatherTheme } from '@/theme/theme-engine';
 import { spacing, typography } from '@/theme/tokens';
@@ -30,12 +31,13 @@ import { useScrubbing, type Scrubbing } from './use-scrubbing';
 import { useWeather, type UseWeatherResult } from './use-weather';
 
 function LoadingState({ color }: { color: string }) {
+  const { messages } = useLocale();
   return (
     <View
       testID="home-loading"
       accessible
       accessibilityRole="progressbar"
-      accessibilityLabel="Loading weather"
+      accessibilityLabel={messages.home.loading}
       style={styles.loading}
     >
       <Skeleton width={160} height={28} color={color} />
@@ -58,11 +60,12 @@ function skyPalette(theme: WeatherTheme) {
 
 function NavigationBar({ theme, detailsId }: { theme: WeatherTheme; detailsId: string }) {
   const router = useRouter();
+  const { messages } = useLocale();
   return (
     <View style={styles.nav}>
       <IconButton
         icon="list"
-        label="Saved places"
+        label={messages.home.savedPlaces}
         color={theme.tile.text}
         background={theme.tile.background}
         onPress={() => router.push('/places')}
@@ -70,21 +73,21 @@ function NavigationBar({ theme, detailsId }: { theme: WeatherTheme; detailsId: s
       <View style={styles.navGroup}>
         <IconButton
           icon="info"
-          label="Weather details"
+          label={messages.home.weatherDetails}
           color={theme.tile.text}
           background={theme.tile.background}
           onPress={() => router.push(`/details/${detailsId}`)}
         />
         <IconButton
           icon="search"
-          label="Search"
+          label={messages.common.search}
           color={theme.tile.text}
           background={theme.tile.background}
           onPress={() => router.push('/search')}
         />
         <IconButton
           icon="settings"
-          label="Settings"
+          label={messages.common.settings}
           color={theme.tile.text}
           background={theme.tile.background}
           onPress={() => router.push('/settings')}
@@ -169,6 +172,7 @@ interface BodyProps {
 
 /** Loading, error, or the weather itself for one place. */
 function WeatherBody({ placeName, weather, theme, moment }: BodyProps) {
+  const { locale } = useLocale();
   const snapshot = weather.data;
   if (!snapshot) {
     if (weather.errorKind) {
@@ -197,7 +201,7 @@ function WeatherBody({ placeName, weather, theme, moment }: BodyProps) {
       />
       {weather.errorKind ? (
         <Text style={[typography.caption, styles.notice, { color: theme.textSecondary }]}>
-          {describeError(weather.errorKind).title}
+          {describeError(weather.errorKind, locale).title}
         </Text>
       ) : null}
       <AlertsSection snapshot={snapshot} />

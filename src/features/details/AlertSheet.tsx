@@ -2,10 +2,11 @@ import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { WeatherAlert } from '@/domain/types';
+import { useLocale } from '@/lib/use-locale';
 import { alertColors, radii, spacing, touch, typography } from '@/theme/tokens';
 import { useTheme } from '@/theme/use-theme';
 
-import { alertPeriodLabel, SEVERITY_LABEL } from './details-view-model';
+import { alertPeriodLabel } from './details-view-model';
 
 export interface AlertSheetProps {
   visible: boolean;
@@ -22,22 +23,23 @@ function AlertEntry(
 ) {
   const { alert, timeZone, timeZoneOffset, now } = props;
   const { colors } = useTheme();
+  const { locale, messages } = useLocale();
   const palette = alertColors[alert.severity];
   return (
     <View style={[styles.entry, { backgroundColor: colors.surface }]}>
       <View style={[styles.badge, { backgroundColor: palette.background }]}>
         <Text style={[typography.label, { color: palette.text }]}>
-          {SEVERITY_LABEL[alert.severity]}
+          {messages.alerts.severity[alert.severity]}
         </Text>
       </View>
       <Text accessibilityRole="header" style={[typography.headline, { color: colors.text }]}>
         {alert.event}
       </Text>
       <Text style={[typography.caption, { color: colors.textSecondary }]}>
-        {`Issued by ${alert.sender}`}
+        {messages.alerts.issuedBy(alert.sender)}
       </Text>
       <Text style={[typography.caption, { color: colors.textSecondary }]}>
-        {alertPeriodLabel(alert, timeZone, now, timeZoneOffset)}
+        {alertPeriodLabel(alert, timeZone, now, timeZoneOffset, locale)}
       </Text>
       {alert.description ? (
         <Text style={[typography.body, { color: colors.text }]}>{alert.description}</Text>
@@ -49,6 +51,7 @@ function AlertEntry(
 /** Full text of every active alert, shown on demand. */
 export function AlertSheet({ visible, alerts, onClose, ...place }: AlertSheetProps) {
   const { colors } = useTheme();
+  const { messages } = useLocale();
   const insets = useSafeAreaInsets();
 
   return (
@@ -66,14 +69,16 @@ export function AlertSheet({ visible, alerts, onClose, ...place }: AlertSheetPro
         </ScrollView>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Close"
+          accessibilityLabel={messages.common.close}
           onPress={onClose}
           style={[
             styles.close,
             { backgroundColor: colors.accentFill, marginBottom: insets.bottom + spacing.md },
           ]}
         >
-          <Text style={[typography.bodyStrong, { color: colors.onAccent }]}>Close</Text>
+          <Text style={[typography.bodyStrong, { color: colors.onAccent }]}>
+            {messages.common.close}
+          </Text>
         </Pressable>
       </View>
     </Modal>

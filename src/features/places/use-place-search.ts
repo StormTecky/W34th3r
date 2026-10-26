@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import type { Place } from '@/domain/types';
 import { log } from '@/lib/logger';
+import { useLocale } from '@/lib/use-locale';
 import { useWeatherProvider } from '@/providers/provider-context';
 import { isProviderError, type ProviderErrorKind } from '@/providers/weather-provider';
 
@@ -46,14 +47,15 @@ export function usePlaceSearch(
   debounceMs: number = SEARCH_DEBOUNCE_MS,
 ): PlaceSearch {
   const provider = useWeatherProvider();
+  const { locale, language } = useLocale();
   const query = useDebouncedQuery(input, debounceMs);
   const active = query !== '';
 
   const search = useQuery({
-    queryKey: ['search', query],
+    queryKey: ['search', query, language],
     queryFn: async ({ signal }) => {
       try {
-        return await provider.searchPlaces(query, { signal });
+        return await provider.searchPlaces(query, { signal, locale });
       } catch (error) {
         if (isProviderError(error)) log.warn('Place search failed', { kind: error.kind });
         throw error;

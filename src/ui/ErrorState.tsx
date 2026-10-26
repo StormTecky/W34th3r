@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { useLocale } from '@/lib/use-locale';
 import type { ProviderErrorKind } from '@/providers/weather-provider';
 import { radii, spacing, touch, typography } from '@/theme/tokens';
 import { useTheme } from '@/theme/use-theme';
@@ -23,13 +24,14 @@ export interface ErrorStateProps {
 /** A calm full-width explanation of a failure, with a retry action where retrying can help. */
 export function ErrorState({ kind, onRetry, palette }: ErrorStateProps) {
   const { colors } = useTheme();
+  const { locale, messages } = useLocale();
   const ink = palette ?? {
     text: colors.text,
     textSecondary: colors.textSecondary,
     button: colors.accentFill,
     onButton: colors.onAccent,
   };
-  const { title, message, retryable } = describeError(kind);
+  const { title, message, retryable } = describeError(kind, locale);
 
   return (
     <View accessible accessibilityRole="alert" style={styles.container}>
@@ -40,14 +42,16 @@ export function ErrorState({ kind, onRetry, palette }: ErrorStateProps) {
       {retryable && onRetry ? (
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Try again"
+          accessibilityLabel={messages.common.tryAgain}
           onPress={onRetry}
           style={({ pressed }) => [
             styles.button,
             { backgroundColor: ink.button, opacity: pressed ? 0.8 : 1 },
           ]}
         >
-          <Text style={[typography.bodyStrong, { color: ink.onButton }]}>Try again</Text>
+          <Text style={[typography.bodyStrong, { color: ink.onButton }]}>
+            {messages.common.tryAgain}
+          </Text>
         </Pressable>
       ) : null}
     </View>

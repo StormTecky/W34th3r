@@ -1,10 +1,9 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import type { WeatherAlert } from '@/domain/types';
+import { useLocale } from '@/lib/use-locale';
 import { alertColors, radii, spacing, typography } from '@/theme/tokens';
 import { Icon } from '@/ui/Icon';
-
-import { SEVERITY_LABEL } from './details-view-model';
 
 export interface AlertBannerProps {
   /** Sorted most severe first; the first is shown, the rest are counted. */
@@ -14,19 +13,20 @@ export interface AlertBannerProps {
 
 /** Flags the most severe active alert. Severity is written out, never conveyed by colour alone. */
 export function AlertBanner({ alerts, onPress }: AlertBannerProps) {
+  const { messages } = useLocale();
   const top = alerts[0];
   if (!top) return null;
   const palette = alertColors[top.severity];
   const more = alerts.length - 1;
-  const severity = SEVERITY_LABEL[top.severity];
-  const label = `${severity}: ${top.event}${more > 0 ? `. ${more} more` : ''}`;
+  const severity = messages.alerts.severity[top.severity];
+  const label = `${severity}: ${top.event}${more > 0 ? `. ${messages.alerts.more(more)}` : ''}`;
 
   return (
     <Pressable
       testID="alert-banner"
       accessibilityRole="button"
       accessibilityLabel={label}
-      accessibilityHint="Opens the full alert"
+      accessibilityHint={messages.alerts.opensFull}
       onPress={onPress}
       style={({ pressed }) => [
         styles.banner,
@@ -39,7 +39,9 @@ export function AlertBanner({ alerts, onPress }: AlertBannerProps) {
         <Text style={[typography.bodyStrong, { color: palette.text }]}>{top.event}</Text>
       </View>
       {more > 0 ? (
-        <Text style={[typography.caption, { color: palette.text }]}>{`+${more} more`}</Text>
+        <Text style={[typography.caption, { color: palette.text }]}>
+          {`+${messages.alerts.more(more)}`}
+        </Text>
       ) : null}
     </Pressable>
   );

@@ -4,6 +4,7 @@ import type { WeatherSnapshot } from '@/domain/types';
 import { buildHourlyRows, type HourlyRow } from '@/features/forecast/forecast-view-model';
 import { buildMoment, clampIndex, type Moment } from '@/features/forecast/scrub';
 import { usePreferences } from '@/features/settings/use-preferences';
+import { useLocale } from '@/lib/use-locale';
 import { useNowSeconds } from '@/lib/use-now';
 
 export interface Scrubbing {
@@ -25,11 +26,12 @@ export interface Scrubbing {
  */
 export function useScrubbing(snapshot: WeatherSnapshot | undefined): Scrubbing {
   const { preferences } = usePreferences();
+  const { locale } = useLocale();
   const now = useNowSeconds();
   const units = preferences.temperatureUnit;
   const rows = useMemo(
-    () => (snapshot ? buildHourlyRows(snapshot, { units, now }) : []),
-    [snapshot, units, now],
+    () => (snapshot ? buildHourlyRows(snapshot, { units, now, locale }) : []),
+    [snapshot, units, now, locale],
   );
 
   const [requested, setRequested] = useState(0);

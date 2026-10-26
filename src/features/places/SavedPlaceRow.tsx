@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { formatTemperature } from '@/domain/units';
+import { useLocale } from '@/lib/use-locale';
 import { useCachedWeather } from '@/features/current/use-cached-weather';
 import { usePreferences } from '@/features/settings/use-preferences';
 import { spacing, touch, typography } from '@/theme/tokens';
@@ -9,8 +10,6 @@ import { IconButton } from '@/ui/IconButton';
 
 import { placeLabel, placeSubtitle } from './place-label';
 import type { Place } from '@/domain/types';
-
-export const CURRENT_LOCATION_LABEL = 'Current location';
 
 export interface SavedPlaceRowProps {
   /** Null for the pinned current-location row. */
@@ -26,26 +25,27 @@ export interface SavedPlaceRowProps {
 
 function EditControls(props: SavedPlaceRowProps & { name: string }) {
   const { colors } = useTheme();
+  const { messages } = useLocale();
   const { name } = props;
   return (
     <View style={styles.controls}>
       <IconButton
         icon="arrow-up"
-        label={`Move ${name} up`}
+        label={messages.places.moveUp(name)}
         disabled={!props.canMoveUp}
         color={colors.text}
         onPress={props.onMoveUp}
       />
       <IconButton
         icon="arrow-down"
-        label={`Move ${name} down`}
+        label={messages.places.moveDown(name)}
         disabled={!props.canMoveDown}
         color={colors.text}
         onPress={props.onMoveDown}
       />
       <IconButton
         icon="trash"
-        label={`Remove ${name}`}
+        label={messages.places.remove(name)}
         color={colors.danger}
         onPress={props.onRemove}
       />
@@ -56,16 +56,19 @@ function EditControls(props: SavedPlaceRowProps & { name: string }) {
 /** Name, region line, cached temperature and the spoken description of one place. */
 function useRowContent(place: Place | null) {
   const { preferences } = usePreferences();
+  const { messages } = useLocale();
   const cached = useCachedWeather(place?.id ?? 'current');
-  const label = place ? placeLabel(place) : CURRENT_LOCATION_LABEL;
+  const label = place ? placeLabel(place) : messages.common.currentLocation;
   const temperature = cached
     ? formatTemperature(cached.current.temperature, preferences.temperatureUnit)
     : null;
   return {
-    name: place?.name ?? CURRENT_LOCATION_LABEL,
+    name: place?.name ?? messages.common.currentLocation,
     subtitle: place ? placeSubtitle(place) : '',
     temperature,
-    spoken: temperature ? `${label}, ${temperature.replace('°', '')} degrees` : label,
+    spoken: temperature
+      ? `${label}, ${messages.spoken.degrees(temperature.replace('°', ''))}`
+      : label,
   };
 }
 

@@ -212,3 +212,52 @@ describe('buildDailyRows', () => {
     expect(buildDailyRows({ ...paris, daily: [] }, options)).toEqual([]);
   });
 });
+
+describe('forecast rows in French', () => {
+  const fr = { ...options, locale: 'fr-FR' };
+
+  it('labels the first hour "Maintenant" and the next ones with the French hour', () => {
+    const rows = buildHourlyRows(paris, fr);
+    expect(rows[0]?.timeLabel).toBe('Maintenant');
+    expect(rows[1]?.timeLabel).toBe('15 h');
+    expect(rows[2]?.timeLabel).toBe('16 h');
+  });
+
+  it('writes the chance of precipitation with a no-break space before the sign', () => {
+    const hourly: HourlyForecastEntry[] = [5, 40].map((precipChance, i) => ({
+      ...paris.hourly[0]!,
+      start: paris.hourly[0]!.start + i * 3600,
+      precipChance,
+    }));
+    const rows = buildHourlyRows({ ...paris, hourly }, fr);
+    expect(rows.map((row) => row.precipLabel)).toEqual([null, '40 %']);
+    expect(rows[1]?.a11yLabel).toMatch(/40 pour cent de risque de précipitations/);
+  });
+
+  it('writes a full French sentence for screen readers', () => {
+    const [first] = buildHourlyRows(paris, fr);
+    expect(first?.a11yLabel).toMatch(
+      /^Maintenant, \d+ degrés, Clear sky, \d+ pour cent de risque de précipitations\.$/,
+    );
+  });
+
+  it('names the days in French, capitalised', () => {
+    expect(buildDailyRows(paris, fr).map((row) => row.dayLabel)).toEqual([
+      "Aujourd'hui",
+      'Demain',
+      'Jeudi',
+      'Vendredi',
+      'Samedi',
+      'Dimanche',
+      'Lundi',
+    ]);
+  });
+
+  it('reads the day maximum and minimum aloud in French', () => {
+    const day = paris.daily[1]!;
+    const row = buildDailyRows(paris, fr)[1]!;
+    expect(row.a11yLabel).toBe(
+      `Demain, maximum ${Math.round(day.high)}, minimum ${Math.round(day.low)}, Clear sky, ${day.precipChance} pour cent de risque de précipitations.`,
+    );
+  });
+});

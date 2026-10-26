@@ -130,3 +130,49 @@ describe('defaultUnitsForRegion', () => {
     expect(defaultUnitsForRegion('us').temperatureUnit).toBe('f');
   });
 });
+
+describe('French formats', () => {
+  const fr = 'fr-FR';
+
+  it('writes decimals with a comma and uses French unit names', () => {
+    expect(formatWindSpeed(3.46, 'ms', fr)).toBe('3,5 m/s');
+    expect(formatWindSpeed(10, 'kmh', fr)).toBe('36 km/h');
+    expect(formatWindSpeed(10, 'mph', fr)).toBe('22 mi/h');
+    expect(formatWindSpeed(10, 'kn', fr)).toBe('19 nd');
+    expect(formatPrecipitation(2.54, 'mm', fr)).toBe('2,5 mm');
+    expect(formatPrecipitation(2.54, 'in', fr)).toBe('0,10 po');
+    expect(formatPrecipitation(0, 'in', fr)).toBe('0 po');
+  });
+
+  it('keeps whole numbers whole and never groups digits', () => {
+    expect(formatWindSpeed(3, 'ms', fr)).toBe('3 m/s');
+    expect(formatPressure(1013.4, fr)).toBe('1013 hPa');
+    expect(formatVisibility(10000, 'kmh', fr)).toBe('10 km');
+    expect(formatVisibility(25_000, 'kmh', 'en-US')).toBe('25 km');
+    expect(formatVisibility(1_200_000, 'kmh', fr)).toBe('1200 km');
+  });
+
+  it('shows visibility with a decimal comma, in kilometres or miles', () => {
+    expect(formatVisibility(4500, 'ms', fr)).toBe('4,5 km');
+    expect(formatVisibility(16093.44, 'mph', fr)).toBe('10 mi');
+    expect(formatVisibility(8046.72, 'mph', fr)).toBe('5 mi');
+    expect(formatVisibility(12_000, 'mph', fr)).toBe('7,5 mi');
+  });
+
+  it('puts a no-break space before the percent sign', () => {
+    expect(formatPercent(40.2, fr)).toBe('40 %');
+    expect(formatHumidity(120, fr)).toBe('100 %');
+    expect(formatHumidity(-3, fr)).toBe('0 %');
+  });
+
+  it('still never shows a negative zero', () => {
+    expect(formatWindSpeed(-0.01, 'ms', fr)).toBe('0 m/s');
+    expect(formatPrecipitation(-0.001, 'mm', fr)).toBe('0 mm');
+  });
+
+  it('follows the language for words and the region for numbers', () => {
+    expect(formatWindSpeed(3.46, 'ms', 'fr-CA')).toBe('3,5 m/s');
+    expect(formatWindSpeed(3.46, 'ms', 'en-GB')).toBe('3.5 m/s');
+    expect(formatWindSpeed(10, 'mph', 'de-DE')).toBe('22 mph');
+  });
+});

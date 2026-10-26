@@ -13,6 +13,7 @@ import { useCurrentPlace } from '@/features/places/use-current-place';
 import { useDeviceLocation } from '@/features/places/use-device-location';
 import { usePlaces } from '@/features/places/use-places';
 import { usePreferences } from '@/features/settings/use-preferences';
+import { useLocale } from '@/lib/use-locale';
 import { useNowSeconds } from '@/lib/use-now';
 import { ConditionBackground } from '@/theme/ConditionBackground';
 import { getTheme, type WeatherTheme } from '@/theme/theme-engine';
@@ -31,9 +32,11 @@ import { WindCompass } from './WindCompass';
 function Measurements({ snapshot, theme }: { snapshot: WeatherSnapshot; theme: WeatherTheme }) {
   const { preferences } = usePreferences();
   const now = useNowSeconds();
+  const { locale, messages } = useLocale();
+  const { titles } = messages.details;
   const model = useMemo(
-    () => buildDetails(snapshot, { windSpeedUnit: preferences.windSpeedUnit, now }),
-    [snapshot, preferences.windSpeedUnit, now],
+    () => buildDetails(snapshot, { windSpeedUnit: preferences.windSpeedUnit, now, locale }),
+    [snapshot, preferences.windSpeedUnit, now, locale],
   );
   const { tile } = theme;
   const ink = { color: tile.text, secondaryColor: tile.textSecondary, accentColor: tile.accent };
@@ -41,22 +44,22 @@ function Measurements({ snapshot, theme }: { snapshot: WeatherSnapshot; theme: W
 
   return (
     <>
-      <DetailTile title="Wind" icon="wind" theme={theme}>
+      <DetailTile title={titles.wind} icon="wind" theme={theme}>
         <WindCompass wind={model.wind} {...ink} />
       </DetailTile>
-      <DetailTile title="UV index" icon="sun" theme={theme}>
+      <DetailTile title={titles.uvIndex} icon="sun" theme={theme}>
         <UVMeter uv={model.uv} {...ink} />
       </DetailTile>
-      <DetailTile title="Humidity" icon="droplet" theme={theme}>
+      <DetailTile title={titles.humidity} icon="droplet" theme={theme}>
         <Text style={value}>{model.humidity.label}</Text>
       </DetailTile>
-      <DetailTile title="Visibility" icon="eye" theme={theme}>
+      <DetailTile title={titles.visibility} icon="eye" theme={theme}>
         <Text style={value}>{model.visibility.label}</Text>
       </DetailTile>
-      <DetailTile title="Pressure" icon="gauge" theme={theme}>
+      <DetailTile title={titles.pressure} icon="gauge" theme={theme}>
         <Text style={value}>{model.pressure.label}</Text>
       </DetailTile>
-      <DetailTile title="Sun" icon="sun" theme={theme} wide>
+      <DetailTile title={titles.sun} icon="sun" theme={theme} wide>
         <SunArc sun={model.sun} {...ink} />
       </DetailTile>
     </>

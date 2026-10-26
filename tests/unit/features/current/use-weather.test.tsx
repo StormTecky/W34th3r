@@ -181,3 +181,31 @@ describe('failures', () => {
     await waitFor(() => expect(result.current.errorKind).toBe('rate-limited'));
   });
 });
+
+describe('language', () => {
+  it('asks the provider for the weather in the language of the device locale', async () => {
+    const getWeather = jest.fn(async (place: { id: string }) => snapshotFetchedAgo(0, place.id));
+    const provider = { getWeather } as unknown as WeatherProvider;
+    const { result } = await setup({ provider, locale: 'fr-CA' });
+    await waitFor(() => expect(result.current.data).toBeDefined());
+    expect(getWeather).toHaveBeenCalledWith(paris, expect.objectContaining({ locale: 'fr-CA' }));
+  });
+
+  it('keeps one cache entry per language, so French never shows English condition names', async () => {
+    const queryClient = createTestQueryClient();
+    queryClient.setQueryData(weatherQueryKey(paris.id, 'en'), snapshotFetchedAgo(60));
+    const { result, fake } = await setup({ queryClient, locale: 'fr-FR' });
+    expect(result.current.data).toBeUndefined();
+    await waitFor(() => expect(result.current.data).toBeDefined());
+    expect(fake.calls.getWeather).toBe(1);
+    expect(queryClient.getQueryData(weatherQueryKey(paris.id, 'fr'))).toBeDefined();
+  });
+
+  it('uses the cached entry of the same language without fetching', async () => {
+    const queryClient = createTestQueryClient();
+    queryClient.setQueryData(weatherQueryKey(paris.id, 'fr'), snapshotFetchedAgo(60));
+    const { result, fake } = await setup({ queryClient, locale: 'fr-FR' });
+    expect(result.current.data).toBeDefined();
+    expect(fake.calls.getWeather).toBe(0);
+  });
+});

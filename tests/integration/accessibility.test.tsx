@@ -88,8 +88,14 @@ const SCREENS = [
   ['Settings', <SettingsScreen key="s" />, 'settings-screen'],
 ] as const;
 
-async function renderScreen(element: (typeof SCREENS)[number][1], waitFor: string) {
-  const env = await buildTestEnvironment({ now: NOW, scenario: 'alerts-active' });
+const LOCALES = ['en-US', 'fr-FR'] as const;
+
+async function renderScreen(
+  element: (typeof SCREENS)[number][1],
+  waitFor: string,
+  locale: string = 'en-US',
+) {
+  const env = await buildTestEnvironment({ now: NOW, scenario: 'alerts-active', locale });
   await env.placesStore.add(PARIS);
   await env.placesStore.add(TOKYO);
   await renderWithProviders(element, { environment: env });
@@ -97,47 +103,53 @@ async function renderScreen(element: (typeof SCREENS)[number][1], waitFor: strin
   await act(async () => undefined);
 }
 
-describe.each(SCREENS)('%s', (_name, element, waitFor) => {
-  it('gives every control a role and an accessible name', async () => {
-    await renderScreen(element, waitFor);
-    const controls = collect(isInteractive);
-    expect(controls.length).toBeGreaterThan(0);
-    for (const control of controls) {
-      const name = String(control.props.accessibilityLabel ?? textOf(control)).trim();
-      expect({
-        control: describeNode(control),
-        role: control.props.accessibilityRole,
-        named: name.length > 0,
-      }).toEqual({
-        control: describeNode(control),
-        role: expect.stringMatching(/^(button|radio)$/),
-        named: true,
-      });
-    }
-  });
+describe.each(LOCALES)('in %s', (locale) => {
+  describe.each(SCREENS)('%s', (_name, element, waitFor) => {
+    it('gives every control a role and an accessible name', async () => {
+      await renderScreen(element, waitFor, locale);
+      const controls = collect(isInteractive);
+      expect(controls.length).toBeGreaterThan(0);
+      for (const control of controls) {
+        const name = String(control.props.accessibilityLabel ?? textOf(control)).trim();
+        expect({
+          control: describeNode(control),
+          role: control.props.accessibilityRole,
+          named: name.length > 0,
+        }).toEqual({
+          control: describeNode(control),
+          role: expect.stringMatching(/^(button|radio)$/),
+          named: true,
+        });
+      }
+    });
 
-  it('makes every control at least 44 points in both directions', async () => {
-    await renderScreen(element, waitFor);
-    for (const control of collect(isInteractive)) {
-      const { height, width } = size(control);
-      // Wide rows span the screen; only an explicitly small control is a failure.
-      expect({ control: describeNode(control), tallEnough: height >= MIN_TARGET }).toEqual({
-        control: describeNode(control),
-        tallEnough: true,
-      });
-      expect(width === 0 || width >= MIN_TARGET).toBe(true);
-    }
-  });
+    it('makes every control at least 44 points in both directions', async () => {
+      await renderScreen(element, waitFor, locale);
+      for (const control of collect(isInteractive)) {
+        const { height, width } = size(control);
+        // Wide rows span the screen; only an explicitly small control is a failure.
+        expect({ control: describeNode(control), tallEnough: height >= MIN_TARGET }).toEqual({
+          control: describeNode(control),
+          tallEnough: true,
+        });
+        expect(width === 0 || width >= MIN_TARGET).toBe(true);
+      }
+    });
 
-  it('lets text scale with the OS font size setting', async () => {
-    await renderScreen(element, waitFor);
-    const fixed = collect((node) => node.type === 'Text' && node.props.allowFontScaling === false);
-    expect(fixed.map(textOf)).toEqual([]);
-  });
+    it('lets text scale with the OS font size setting', async () => {
+      await renderScreen(element, waitFor, locale);
+      const fixed = collect(
+        (node) => node.type === 'Text' && node.props.allowFontScaling === false,
+      );
+      expect(fixed.map(textOf)).toEqual([]);
+    });
 
-  it('marks headings so screen-reader users can navigate by them', async () => {
-    await renderScreen(element, waitFor);
-    expect(collect((node) => node.props.accessibilityRole === 'header').length).toBeGreaterThan(0);
+    it('marks headings so screen-reader users can navigate by them', async () => {
+      await renderScreen(element, waitFor, locale);
+      expect(collect((node) => node.props.accessibilityRole === 'header').length).toBeGreaterThan(
+        0,
+      );
+    });
   });
 });
 
@@ -176,5 +188,12 @@ describe('information is not conveyed by colour alone', () => {
     expect(screen.getByText('Severe')).toBeTruthy();
     const dailyLabel = screen.getAllByTestId('daily-row')[0]!.props.accessibilityLabel as string;
     expect(dailyLabel).toMatch(/high \d+, low \d+/);
+  });
+
+  it('does the same in French', async () => {
+    await renderScreen(<HomeScreen />, 'current-temperature', 'fr-FR');
+    expect(screen.getByText('Sévère')).toBeTruthy();
+    const dailyLabel = screen.getAllByTestId('daily-row')[0]!.props.accessibilityLabel as string;
+    expect(dailyLabel).toMatch(/maximum \d+, minimum \d+/);
   });
 });

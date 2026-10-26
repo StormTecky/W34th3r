@@ -47,7 +47,7 @@ The full result of one successful provider fetch for a Place (the cacheable unit
 | `temperature` | number | yes | °C |
 | `feelsLike` | number | yes | °C |
 | `condition` | ConditionCategory | yes | See below |
-| `summary` | string | yes | Provider description, capitalized for display |
+| `summary` | string | yes | Provider description in the language of the request, capitalized for display |
 | `isDay` | boolean | yes | Derived from `observedAt` vs `sunrise`/`sunset` |
 | `high` / `low` | number | yes | Today's values, from `daily[0]` |
 | `windSpeed` | number | yes | m/s |

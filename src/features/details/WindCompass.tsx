@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import Svg, { Circle, G, Line, Path } from 'react-native-svg';
 
+import { useLocale } from '@/lib/use-locale';
 import { spacing, typography } from '@/theme/tokens';
 import { Decorative } from '@/ui/Decorative';
 
@@ -70,6 +71,7 @@ function Dial({
 
 /** A small compass with an arrow showing where the wind is blowing to, and the speed as text. */
 export function WindCompass({ wind, color, secondaryColor, accentColor }: WindCompassProps) {
+  const { messages } = useLocale();
   return (
     <View accessible accessibilityLabel={wind.a11yLabel} style={styles.container}>
       <Dial degrees={wind.degrees} secondaryColor={secondaryColor} accentColor={accentColor} />
@@ -78,9 +80,9 @@ export function WindCompass({ wind, color, secondaryColor, accentColor }: WindCo
         <Text style={[typography.caption, { color: secondaryColor }]}>{wind.directionLabel}</Text>
       ) : null}
       {wind.gustLabel ? (
-        <Text
-          style={[typography.caption, { color: secondaryColor }]}
-        >{`Gusts ${wind.gustLabel}`}</Text>
+        <Text style={[typography.caption, { color: secondaryColor }]}>
+          {messages.details.gusts(wind.gustLabel)}
+        </Text>
       ) : null}
     </View>
   );

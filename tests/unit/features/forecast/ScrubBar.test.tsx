@@ -35,6 +35,21 @@ async function renderBar(index = 0, onChange = jest.fn()) {
   return onChange;
 }
 
+describe('in French', () => {
+  it('names the slider and the way back to now in French', async () => {
+    const frRows = buildHourlyRows(
+      buildSnapshot('clear-day', { placeId: 'p', timeZone: 'Europe/Paris', now: NOW }),
+      { units: 'c', now: NOW, locale: 'fr-FR' },
+    );
+    await renderWithProviders(
+      <ScrubBar rows={frRows} index={3} onChange={jest.fn()} theme={theme} />,
+      { locale: 'fr-FR' },
+    );
+    expect(bar().props.accessibilityLabel).toBe('Heure de la journée');
+    expect(screen.getByRole('button', { name: 'Revenir à maintenant' })).toBeTruthy();
+  });
+});
+
 describe('as an accessible slider', () => {
   it('is an adjustable control named "Time of day" that reads the chosen hour', async () => {
     await renderBar(0);

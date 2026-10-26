@@ -36,3 +36,30 @@ describe('moodLine', () => {
     expect(moodLine('unknown', true, 10)).toBe('Weather is weathering.');
   });
 });
+
+describe('moodLine in French', () => {
+  const fr = 'fr-FR';
+
+  it('gives every condition, day and night, a French line', () => {
+    for (const condition of CONDITION_CATEGORIES) {
+      for (const isDay of [true, false]) {
+        const line = moodLine(condition, isDay, 15, fr);
+        expect(line.length).toBeGreaterThan(3);
+        expect(line).not.toBe(moodLine(condition, isDay, 15));
+      }
+    }
+  });
+
+  it('keeps the same rules for clear skies and extreme temperatures', () => {
+    expect(moodLine('clear', true, 22, fr)).toBe('Grand soleil. Allez jouer !');
+    expect(moodLine('clear', true, 8, fr)).toBe('Frais et lumineux dehors.');
+    expect(moodLine('clear', false, 12, fr)).toBe('Ciel dégagé. Levez les yeux !');
+    expect(moodLine('clear', true, 38, fr)).toBe('Quelle fournaise. Hydratez-vous !');
+    expect(moodLine('snow', true, -20, fr)).toBe('Brrr. Un froid de canard dehors.');
+  });
+
+  it('follows the language, not the region, and falls back to English otherwise', () => {
+    expect(moodLine('rain', true, 10, 'fr-CA')).toBe('Prenez un parapluie !');
+    expect(moodLine('rain', true, 10, 'de-DE')).toBe('Grab an umbrella!');
+  });
+});

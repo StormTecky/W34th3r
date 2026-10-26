@@ -1,7 +1,9 @@
 import { isDayForInstant } from '@/domain/conditions';
+import { DEFAULT_LOCALE } from '@/domain/locale';
+import { messagesFor } from '@/domain/messages';
 import type { ConditionCategory, TemperatureUnit, WeatherSnapshot } from '@/domain/types';
 import { formatHourLabel, relativeDayLabel } from '@/domain/time';
-import { formatTemperature } from '@/domain/units';
+import { formatPercent, formatTemperature } from '@/domain/units';
 
 export interface ForecastOptions {
   units: TemperatureUnit;
@@ -13,7 +15,7 @@ export interface ForecastOptions {
 export interface HourlyRow {
   key: string;
   start: number;
-  /** "Now" for the first entry, otherwise the place-local hour, e.g. "3 PM". */
+  /** "Now" for the first entry (in the locale's language), otherwise the place-local hour. */
   timeLabel: string;
   /** "Now", or the day and hour, e.g. "Tomorrow 12 AM". Names a moment for the time-travel bar. */
   dayTimeLabel: string;
@@ -50,18 +52,19 @@ export interface DailyRow {
 
 const MIN_VISIBLE_PRECIP = 10;
 
-const precipLabel = (chance: number) => (chance >= MIN_VISIBLE_PRECIP ? `${chance}%` : null);
-const precipSentence = (chance: number) => `${chance} percent chance of precipitation`;
+const precipLabel = (chance: number, locale: string) =>
+  chance >= MIN_VISIBLE_PRECIP ? formatPercent(chance, locale) : null;
 const bare = (celsius: number, units: TemperatureUnit) =>
   formatTemperature(celsius, units).replace('°', '');
 
 export function buildHourlyRows(snapshot: WeatherSnapshot, options: ForecastOptions): HourlyRow[] {
   const { timeZone, timeZoneOffset, current } = snapshot;
-  const locale = options.locale ?? 'en-US';
+  const locale = options.locale ?? DEFAULT_LOCALE;
+  const { time, spoken, forecast } = messagesFor(locale);
 
   return snapshot.hourly.map((entry, index) => {
     const timeLabel =
-      index === 0 ? 'Now' : formatHourLabel(entry.start, timeZone, locale, timeZoneOffset);
+      index === 0 ? time.now : formatHourLabel(entry.start, timeZone, locale, timeZoneOffset);
     return {
       key: String(entry.start),
       start: entry.start,
@@ -76,13 +79,13 @@ export function buildHourlyRows(snapshot: WeatherSnapshot, options: ForecastOpti
       condition: entry.condition,
       isDay: isDayForInstant(entry.start, current.sunrise, current.sunset),
       summary: entry.summary,
-      precipLabel: precipLabel(entry.precipChance),
+      precipLabel: precipLabel(entry.precipChance, locale),
       a11yLabel:
         [
           timeLabel,
-          `${bare(entry.temperature, options.units)} degrees`,
+          spoken.degrees(bare(entry.temperature, options.units)),
           entry.summary,
-          precipSentence(entry.precipChance),
+          forecast.precipChance(entry.precipChance),
         ].join(', ') + '.',
     };
   });
@@ -90,7 +93,8 @@ export function buildHourlyRows(snapshot: WeatherSnapshot, options: ForecastOpti
 
 export function buildDailyRows(snapshot: WeatherSnapshot, options: ForecastOptions): DailyRow[] {
   const { timeZone, timeZoneOffset, daily } = snapshot;
-  const locale = options.locale ?? 'en-US';
+  const locale = options.locale ?? DEFAULT_LOCALE;
+  const { forecast } = messagesFor(locale);
   const weekMin = Math.min(...daily.map((day) => day.low));
   const weekMax = Math.max(...daily.map((day) => day.high));
   const span = weekMax - weekMin;
@@ -109,14 +113,14 @@ export function buildDailyRows(snapshot: WeatherSnapshot, options: ForecastOptio
       rangeEnd: span > 0 ? (entry.high - weekMin) / span : 1,
       condition: entry.condition,
       summary: entry.summary,
-      precipLabel: precipLabel(entry.precipChance),
+      precipLabel: precipLabel(entry.precipChance, locale),
       a11yLabel:
         [
           dayLabel,
-          `high ${bare(entry.high, options.units)}`,
-          `low ${bare(entry.low, options.units)}`,
+          forecast.high(bare(entry.high, options.units)),
+          forecast.low(bare(entry.low, options.units)),
           entry.summary,
-          precipSentence(entry.precipChance),
+          forecast.precipChance(entry.precipChance),
         ].join(', ') + '.',
     };
   });

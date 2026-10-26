@@ -3,15 +3,18 @@ import Constants from 'expo-constants';
 
 import { getConfig } from '@/config/env';
 import { STALE_AFTER_SECONDS } from '@/domain/freshness';
+import { DEFAULT_LANGUAGE, type Language } from '@/domain/locale';
 
 import { createStoragePersister } from './persister';
 
 export const CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 
-/** Bump when the shape of a cached WeatherSnapshot changes. */
-export const CACHE_SCHEMA_VERSION = 1;
+/** Bump when the shape of a cached WeatherSnapshot, or the key it is cached under, changes. */
+export const CACHE_SCHEMA_VERSION = 2;
 
-export const weatherQueryKey = (placeId: string) => ['weather', placeId] as const;
+/** Condition names arrive in the user's language, so each language has its own entry. */
+export const weatherQueryKey = (placeId: string, language: Language = DEFAULT_LANGUAGE) =>
+  ['weather', placeId, language] as const;
 
 export function createAppQueryClient(): QueryClient {
   return new QueryClient({

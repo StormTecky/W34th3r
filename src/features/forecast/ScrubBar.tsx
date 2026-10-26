@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
+import { useLocale } from '@/lib/use-locale';
 import type { WeatherTheme } from '@/theme/theme-engine';
 import { elevation, radii, spacing, touch, typography } from '@/theme/tokens';
 import { useReducedMotion } from '@/theme/use-reduced-motion';
@@ -150,12 +151,13 @@ function Cap({
   theme: WeatherTheme;
 }) {
   const { tile } = theme;
+  const { messages } = useLocale();
   return (
     <View testID="scrub-cap" style={styles.cap}>
       {index > 0 ? (
         <IconButton
           icon="clock"
-          label="Back to now"
+          label={messages.forecast.backToNow}
           color={tile.text}
           onPress={() => onChange(0)}
         />
@@ -171,6 +173,7 @@ export function ScrubBar({ rows, index, onChange, theme }: ScrubBarProps) {
   const { onAccessibilityAction, ...touchHandlers } = handlers;
   const thumbStyle = useThumbStyle(index, rows.length, width);
   const { tile } = theme;
+  const { messages } = useLocale();
   if (rows.length === 0) return null;
   const current = rows[clampIndex(index, rows.length)]!;
 
@@ -181,7 +184,7 @@ export function ScrubBar({ rows, index, onChange, theme }: ScrubBarProps) {
         testID="scrub-bar"
         accessible
         accessibilityRole="adjustable"
-        accessibilityLabel="Time of day"
+        accessibilityLabel={messages.forecast.timeOfDay}
         accessibilityValue={{ text: current.dayTimeLabel }}
         aria-valuetext={current.dayTimeLabel}
         accessibilityActions={[{ name: 'increment' }, { name: 'decrement' }]}

@@ -4,11 +4,13 @@ import type { ReactElement, ReactNode } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { createAppQueryClient } from '@/data/query-client';
+import { DEFAULT_LOCALE } from '@/domain/locale';
 import type { UserPreferences } from '@/domain/types';
 import { createPlacesStore } from '@/features/places/places-store';
 import { PlacesProvider } from '@/features/places/use-places';
 import { createPreferencesStore } from '@/features/settings/preferences-store';
 import { PreferencesProvider } from '@/features/settings/use-preferences';
+import { LocaleProvider } from '@/lib/use-locale';
 import { FakeWeatherProvider } from '@/providers/fake/fake-provider';
 import type { FakeScenario } from '@/providers/fake/scenarios';
 import { WeatherProviderProvider } from '@/providers/provider-context';
@@ -32,6 +34,8 @@ export interface RenderWithProvidersOptions {
   preferences?: Partial<UserPreferences>;
   /** Device region used for default units; "FR" (metric) unless given. */
   regionCode?: string | null;
+  /** Device locale for words and formats, e.g. "fr-FR"; English (US) unless given. */
+  locale?: string;
   queryClient?: QueryClient;
   /** Reuse the stores and providers of an earlier render, e.g. to move between screens. */
   environment?: TestEnvironment;
@@ -61,6 +65,7 @@ export async function buildTestEnvironment(options: RenderWithProvidersOptions =
   });
   const provider = options.provider ?? fake;
   const queryClient = options.queryClient ?? createTestQueryClient();
+  const locale = options.locale ?? DEFAULT_LOCALE;
 
   function Wrapper({ children }: { children: ReactNode }) {
     return (
@@ -68,7 +73,9 @@ export async function buildTestEnvironment(options: RenderWithProvidersOptions =
         <QueryClientProvider client={queryClient}>
           <WeatherProviderProvider provider={provider}>
             <PreferencesProvider store={preferencesStore}>
-              <PlacesProvider store={placesStore}>{children}</PlacesProvider>
+              <PlacesProvider store={placesStore}>
+                <LocaleProvider locale={locale}>{children}</LocaleProvider>
+              </PlacesProvider>
             </PreferencesProvider>
           </WeatherProviderProvider>
         </QueryClientProvider>

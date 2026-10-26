@@ -1,9 +1,15 @@
 import { isDayAt } from '@/domain/conditions';
-import type { AlertSeverity, WeatherAlert, WeatherSnapshot, WindSpeedUnit } from '@/domain/types';
+import { DEFAULT_LOCALE } from '@/domain/locale';
+import { messagesFor } from '@/domain/messages';
+import type {
+  AlertSeverity,
+  UvCategory,
+  WeatherAlert,
+  WeatherSnapshot,
+  WindSpeedUnit,
+} from '@/domain/types';
 import { dayKey, formatClockTime, relativeDayLabel } from '@/domain/time';
 import { formatHumidity, formatPressure, formatVisibility, formatWindSpeed } from '@/domain/units';
-
-export const UNAVAILABLE = 'Unavailable';
 
 export interface DetailsOptions {
   windSpeedUnit: WindSpeedUnit;
@@ -12,41 +18,19 @@ export interface DetailsOptions {
   locale?: string;
 }
 
-const POINTS = [
-  ['N', 'north'],
-  ['NNE', 'north-northeast'],
-  ['NE', 'northeast'],
-  ['ENE', 'east-northeast'],
-  ['E', 'east'],
-  ['ESE', 'east-southeast'],
-  ['SE', 'southeast'],
-  ['SSE', 'south-southeast'],
-  ['S', 'south'],
-  ['SSW', 'south-southwest'],
-  ['SW', 'southwest'],
-  ['WSW', 'west-southwest'],
-  ['W', 'west'],
-  ['WNW', 'west-northwest'],
-  ['NW', 'northwest'],
-  ['NNW', 'north-northwest'],
-] as const;
-
-/** The 16-point compass direction for a bearing in degrees (any value; it wraps). */
-export function compassPoint(degrees: number): { abbreviation: string; name: string } {
+/**
+ * The 16-point compass direction for a bearing in degrees (any value; it wraps): the letters, the
+ * name, and the name as it reads after "wind" ("from north").
+ */
+export function compassPoint(
+  degrees: number,
+  locale: string = DEFAULT_LOCALE,
+): { abbreviation: string; name: string; from: string } {
   const wrapped = ((degrees % 360) + 360) % 360;
-  const [abbreviation, name] = POINTS[Math.round(wrapped / 22.5) % 16]!;
-  return { abbreviation, name };
+  const [abbreviation, name, from] =
+    messagesFor(locale).details.compass[Math.round(wrapped / 22.5) % 16]!;
+  return { abbreviation, name, from };
 }
-
-export type UvCategory = 'Low' | 'Moderate' | 'High' | 'Very high' | 'Extreme';
-
-const UV_ADVICE: Record<UvCategory, string> = {
-  Low: 'No protection needed.',
-  Moderate: 'Wear sunscreen and sunglasses.',
-  High: 'Seek shade around midday.',
-  'Very high': 'Avoid the sun around midday.',
-  Extreme: 'Stay out of the sun if you can.',
-};
 
 /** WHO categories, applied to the rounded index. */
 export function uvCategory(uvi: number): UvCategory {
@@ -71,7 +55,9 @@ export interface WindDetails {
 export interface UvDetails {
   available: boolean;
   label: string;
+  /** Stable identifier of the WHO category; `categoryLabel` is the word to show. */
   category: UvCategory | null;
+  categoryLabel: string | null;
   advice: string | null;
   value: number | null;
   /** Position on the 0-11 scale, 0..1. */
@@ -96,30 +82,28 @@ export interface DetailsModel {
   sun: SunDetails;
 }
 
-function buildWind(snapshot: WeatherSnapshot, unit: WindSpeedUnit): WindDetails {
+function buildWind(snapshot: WeatherSnapshot, unit: WindSpeedUnit, locale: string): WindDetails {
   const { windSpeed, windGust, windDirection } = snapshot.current;
-  const speedLabel = formatWindSpeed(windSpeed, unit);
-  const gustLabel = windGust === undefined ? null : formatWindSpeed(windGust, unit);
-  const point = windDirection === undefined ? null : compassPoint(windDirection);
-  const spoken = [
-    `Wind ${speedLabel}${point ? ` from ${point.name}` : ''}`,
-    gustLabel ? `gusts ${gustLabel}` : null,
-  ];
+  const speedLabel = formatWindSpeed(windSpeed, unit, locale);
+  const gustLabel = windGust === undefined ? null : formatWindSpeed(windGust, unit, locale);
+  const point = windDirection === undefined ? null : compassPoint(windDirection, locale);
   return {
     speedLabel,
     gustLabel,
     directionLabel: point?.abbreviation ?? null,
     degrees: windDirection ?? null,
-    a11yLabel: spoken.filter(Boolean).join(', '),
+    a11yLabel: messagesFor(locale).details.windSpoken(speedLabel, point?.from ?? null, gustLabel),
   };
 }
 
-function buildUv(uvIndex: number | undefined): UvDetails {
+function buildUv(uvIndex: number | undefined, locale: string): UvDetails {
+  const { common, details } = messagesFor(locale);
   if (uvIndex === undefined) {
     return {
       available: false,
-      label: UNAVAILABLE,
+      label: common.unavailable,
       category: null,
+      categoryLabel: null,
       advice: null,
       value: null,
       fraction: 0,
@@ -130,22 +114,23 @@ function buildUv(uvIndex: number | undefined): UvDetails {
     available: true,
     label: String(Math.round(uvIndex)),
     category,
-    advice: UV_ADVICE[category],
+    categoryLabel: details.uv[category].label,
+    advice: details.uv[category].advice,
     value: uvIndex,
     fraction: Math.min(1, Math.max(0, uvIndex / UV_SCALE_TOP)),
   };
 }
 
-function buildSun(snapshot: WeatherSnapshot, options: DetailsOptions): SunDetails {
+function buildSun(snapshot: WeatherSnapshot, options: DetailsOptions, locale: string): SunDetails {
   const { sunrise, sunset } = snapshot.current;
   const { timeZone, timeZoneOffset } = snapshot;
-  const locale = options.locale ?? 'en-US';
+  const unavailable = messagesFor(locale).common.unavailable;
   const available = sunrise > 0 && sunset > sunrise;
   const time = (epoch: number) => formatClockTime(epoch, timeZone, locale, timeZoneOffset);
   return {
     available,
-    sunriseLabel: available ? time(sunrise) : UNAVAILABLE,
-    sunsetLabel: available ? time(sunset) : UNAVAILABLE,
+    sunriseLabel: available ? time(sunrise) : unavailable,
+    sunsetLabel: available ? time(sunset) : unavailable,
     progress: available
       ? Math.min(1, Math.max(0, (options.now - sunrise) / (sunset - sunrise)))
       : 0,
@@ -155,30 +140,23 @@ function buildSun(snapshot: WeatherSnapshot, options: DetailsOptions): SunDetail
 
 export function buildDetails(snapshot: WeatherSnapshot, options: DetailsOptions): DetailsModel {
   const { current } = snapshot;
-  const visibility = current.visibility;
+  const { visibility } = current;
+  const locale = options.locale ?? DEFAULT_LOCALE;
   return {
-    wind: buildWind(snapshot, options.windSpeedUnit),
+    wind: buildWind(snapshot, options.windSpeedUnit, locale),
     humidity: {
-      label: formatHumidity(current.humidity),
+      label: formatHumidity(current.humidity, locale),
       value: Math.min(100, Math.max(0, current.humidity)),
     },
-    uv: buildUv(current.uvIndex),
+    uv: buildUv(current.uvIndex, locale),
     visibility:
       visibility === undefined
-        ? { available: false, label: UNAVAILABLE }
-        : { available: true, label: formatVisibility(visibility, options.windSpeedUnit) },
-    pressure: { label: formatPressure(current.pressure) },
-    sun: buildSun(snapshot, options),
+        ? { available: false, label: messagesFor(locale).common.unavailable }
+        : { available: true, label: formatVisibility(visibility, options.windSpeedUnit, locale) },
+    pressure: { label: formatPressure(current.pressure, locale) },
+    sun: buildSun(snapshot, options, locale),
   };
 }
-
-export const SEVERITY_LABEL: Record<AlertSeverity, string> = {
-  extreme: 'Extreme',
-  severe: 'Severe',
-  moderate: 'Moderate',
-  minor: 'Minor',
-  unknown: 'Alert',
-};
 
 const SEVERITY_RANK: Record<AlertSeverity, number> = {
   extreme: 0,
@@ -201,7 +179,7 @@ export function alertPeriodLabel(
   timeZone: string,
   now: number,
   offsetSeconds?: number,
-  locale = 'en-US',
+  locale: string = DEFAULT_LOCALE,
 ): string {
   const part = (epoch: number, withDay: boolean) => {
     const clock = formatClockTime(epoch, timeZone, locale, offsetSeconds);

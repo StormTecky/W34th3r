@@ -196,3 +196,15 @@ describe('failures and privacy', () => {
     expect(result.current.errorKind).toBeNull();
   });
 });
+
+describe('language', () => {
+  it('searches in the language of the device locale and keeps results per language', async () => {
+    const searchPlaces = jest.fn(async () => []);
+    const provider = { searchPlaces } as unknown as WeatherProvider;
+    const { type } = await setup('', { provider, locale: 'fr-FR' });
+    await type('lyon');
+    await advance(DEBOUNCE_MS);
+    await waitFor(() => expect(searchPlaces).toHaveBeenCalledTimes(1));
+    expect(searchPlaces).toHaveBeenCalledWith('lyon', expect.objectContaining({ locale: 'fr-FR' }));
+  });
+});

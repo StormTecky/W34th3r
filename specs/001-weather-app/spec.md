@@ -189,6 +189,12 @@ selected units, and is presented with a visual aid.
   an account or personal sign-in to use any feature.
 - **FR-017**: The app MUST present a consistent visual language (typography, spacing, color,
   iconography, motion) across all screens, aligned to the "modern, designed" intent.
+- **FR-018**: The app MUST show its text, spoken descriptions, dates, times and numbers in the
+  device language when it is English or French (decimal comma, 24-hour clock and no-break spaces
+  before French punctuation included), and English otherwise. The playful weather lines are written
+  for each language rather than translated word for word. Condition names and place names are
+  requested from the provider in the same language. Text that comes from the weather service itself
+  (official alert headlines and descriptions) is shown as received.
 
 ### Key Entities
 
@@ -234,7 +240,8 @@ selected units, and is presented with a visual aid.
   screens; the specific delivery platform is decided during planning.
 - Weather, forecast, geocoding, and alert data come from one or more external providers selected
   during planning; coverage of alerts depends on region and may be unavailable in some places.
-- Interface language is English for v1; units and formatting follow the device region.
+- The interface is available in English and French and follows the device language (English when
+  the device language is not translated); units and formatting follow the device region.
 - Notifications, weather maps/radar, widgets, historical data, and social sharing are out of scope
   for v1.
 - Users generally have an intermittent but usually available network connection; the app is not

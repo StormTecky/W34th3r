@@ -29,11 +29,14 @@ Notes:
   `rate-limited`; other statuses follow the shared mapping in `openweather-api.md`.
 - Weather codes: WMO interpretation codes (0 clear, 1 mainly clear, 2 partly cloudy, 3 overcast,
   45/48 fog, 51–57 drizzle, 61–67 rain, 71–77 snow, 80–86 showers, 95–99 thunderstorm); the table
-  is in `src/providers/openmeteo/codes.ts`. Unknown codes map to `unknown`.
+  is in `src/providers/openmeteo/codes.ts`, with each name in English and French. Unknown codes map
+  to `unknown`. Open-Meteo has no language option for the forecast, so `summary` is worded from this
+  table in the language of the request's `locale`.
 
 ## 2. Place search: `GET https://geocoding-api.open-meteo.com/v1/search`
 
-Parameters: `name` (trimmed), `count=5`, `language=en`, `format=json`. Response `results[]` of
+Parameters: `name` (trimmed), `count=5`, `language` (the locale's language, `en` or `fr`; `en` when
+there is no locale), `format=json`. Response `results[]` of
 `{ name, latitude, longitude, country_code, country, admin1, timezone }`; **no `results` key when
 nothing matches** (resolves `[]`). Latitude and longitude are range-checked. `admin1` becomes `region`;
 `timezone` fills `Place.timeZone`.
@@ -41,7 +44,7 @@ nothing matches** (resolves `[]`). Latitude and longitude are range-checked. `ad
 ## 3. Naming the device location: `GET https://api-bdc.io/data/reverse-geocode-client`
 
 Open-Meteo has no reverse geocoding, so BigDataCloud's free client-side endpoint names the location.
-Parameters: `latitude`, `longitude` (rounded), `localityLanguage=en`. Name = first non-empty of `city`,
+Parameters: `latitude`, `longitude` (rounded), `localityLanguage` (the locale's language, `en` or `fr`). Name = first non-empty of `city`,
 `locality`, `principalSubdivision`, `countryName`; none = `null` (the app shows "Current location").
 `principalSubdivision` becomes `region` unless it repeats the name.
 

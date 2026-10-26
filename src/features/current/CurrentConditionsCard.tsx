@@ -1,11 +1,13 @@
 import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import Animated from 'react-native-reanimated';
 
+import type { Messages } from '@/domain/messages';
 import { moodLine } from '@/domain/mood';
 import type { ConditionCategory, CurrentConditions } from '@/domain/types';
-import { formatTemperature } from '@/domain/units';
+import { formatPercent, formatTemperature } from '@/domain/units';
 import type { Moment } from '@/features/forecast/scrub';
 import { usePreferences } from '@/features/settings/use-preferences';
+import { useLocale } from '@/lib/use-locale';
 import { WeatherScene } from '@/theme/scenes/WeatherScene';
 import type { WeatherTheme } from '@/theme/theme-engine';
 import { radii, spacing, textShadow, typography } from '@/theme/tokens';
@@ -41,38 +43,40 @@ function describe(
   current: CurrentConditions,
   moment: Moment | null | undefined,
   units: 'c' | 'f',
+  { spoken, current: text }: Messages,
 ): string {
   const whole = (celsius: number) => formatTemperature(celsius, units).replace('°', '');
   const parts = moment
-    ? [placeName, `${whole(moment.temperature)} degrees`, moment.summary, moment.dayTimeLabel]
+    ? [placeName, spoken.degrees(whole(moment.temperature)), moment.summary, moment.dayTimeLabel]
     : [
         placeName,
-        `${whole(current.temperature)} degrees`,
+        spoken.degrees(whole(current.temperature)),
         current.summary,
-        `Feels like ${whole(current.feelsLike)} degrees`,
-        `High ${whole(current.high)}, low ${whole(current.low)}`,
+        text.spokenFeelsLike(whole(current.feelsLike)),
+        text.spokenHighLow(whole(current.high), whole(current.low)),
       ];
   return parts.join('. ') + '.';
 }
-
-const precipWord = (condition: ConditionCategory) =>
-  condition === 'snow' || condition === 'sleet' ? 'Snow' : 'Rain';
 
 /** The pills under the conditions: feels-like and range now, or the time and rain chance later. */
 function chipTexts(
   current: CurrentConditions,
   moment: Moment | null | undefined,
   temperature: (celsius: number) => string,
+  locale: string,
+  { current: text }: Messages,
 ): string[] {
   if (!moment) {
     return [
-      `Feels like ${temperature(current.feelsLike)}`,
-      `H:${temperature(current.high)}  L:${temperature(current.low)}`,
+      text.feelsLike(temperature(current.feelsLike)),
+      text.highLow(temperature(current.high), temperature(current.low)),
     ];
   }
   const chips = [moment.dayTimeLabel];
   if (moment.precipChance >= MIN_CHIP_PRECIP) {
-    chips.push(`${precipWord(moment.condition)} chance ${moment.precipChance}%`);
+    const percent = formatPercent(moment.precipChance, locale);
+    const snowy = moment.condition === 'snow' || moment.condition === 'sleet';
+    chips.push(snowy ? text.snowChance(percent) : text.rainChance(percent));
   }
   return chips;
 }
@@ -92,11 +96,12 @@ function Chips({ texts, theme }: { texts: string[]; theme: WeatherTheme }) {
 interface HeadlineProps {
   shown: Shown;
   theme: WeatherTheme;
+  locale: string;
   temperature: (celsius: number) => string;
 }
 
 /** The giant temperature, the conditions and the playful one-liner. */
-function Headline({ shown, theme, temperature }: HeadlineProps) {
+function Headline({ shown, theme, locale, temperature }: HeadlineProps) {
   return (
     <>
       <Text
@@ -109,7 +114,7 @@ function Headline({ shown, theme, temperature }: HeadlineProps) {
       </Text>
       <Text style={[typography.title, { color: theme.text }]}>{shown.summary}</Text>
       <Text style={[typography.bodyStrong, { color: theme.textSecondary }]}>
-        {moodLine(shown.condition, shown.isDay, shown.temperature)}
+        {moodLine(shown.condition, shown.isDay, shown.temperature, locale)}
       </Text>
     </>
   );
@@ -126,6 +131,7 @@ export function CurrentConditionsCard({
   moment,
 }: CurrentConditionsCardProps) {
   const { preferences } = usePreferences();
+  const { locale, messages } = useLocale();
   const { width } = useWindowDimensions();
   const unit = preferences.temperatureUnit;
   const shown = shownFor(current, moment);
@@ -139,15 +145,15 @@ export function CurrentConditionsCard({
   return (
     <Animated.View
       accessible
-      accessibilityLabel={describe(placeName, current, moment, unit)}
+      accessibilityLabel={describe(placeName, current, moment, unit, messages)}
       style={[styles.container, fade]}
     >
       <Text accessibilityRole="header" style={[typography.hero, textShadow, { color: theme.text }]}>
         {placeName}
       </Text>
       <WeatherScene condition={shown.condition} isDay={shown.isDay} size={sceneSize} />
-      <Headline shown={shown} theme={theme} temperature={temperature} />
-      <Chips texts={chipTexts(current, moment, temperature)} theme={theme} />
+      <Headline shown={shown} theme={theme} locale={locale} temperature={temperature} />
+      <Chips texts={chipTexts(current, moment, temperature, locale, messages)} theme={theme} />
     </Animated.View>
   );
 }
