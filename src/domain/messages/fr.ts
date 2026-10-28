@@ -162,6 +162,10 @@ export const fr: Messages = {
       },
     },
     useMyLocation: 'Utiliser ma position',
+    deniedInBrowser: {
+      title: 'La localisation est bloquée',
+      body: "Autorisez la localisation pour ce site dans la barre d'adresse de votre navigateur, puis réessayez.",
+    },
     openSettings: 'Ouvrir les Paramètres',
     title: 'Lieux',
     emptyTitle: 'Aucun lieu enregistré',

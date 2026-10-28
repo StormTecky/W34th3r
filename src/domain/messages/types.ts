@@ -110,6 +110,8 @@ export interface Messages {
   };
   places: {
     permission: Record<LocationPromptVariant, { title: string; body: string }>;
+    /** The denied copy in a browser, which has no Settings app: the site permission is the fix. */
+    deniedInBrowser: { title: string; body: string };
     useMyLocation: string;
     openSettings: string;
     title: string;

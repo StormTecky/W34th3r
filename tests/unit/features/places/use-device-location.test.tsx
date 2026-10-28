@@ -108,6 +108,25 @@ describe('permission undetermined', () => {
   });
 });
 
+describe('a browser that cannot find the position', () => {
+  // expo-location on the web answers "granted: false" with the GRANTED status when the permission
+  // request fails for a reason other than a refusal (no fix, timeout).
+  it('is unavailable, not undetermined, so the user is not asked the same question again', async () => {
+    mocked.getForegroundPermissionsAsync.mockResolvedValue(permission('undetermined'));
+    mocked.requestForegroundPermissionsAsync.mockResolvedValue({
+      status: 'granted',
+      granted: false,
+      canAskAgain: true,
+      expires: 0,
+    } as never);
+    const { result } = await setup();
+    await waitFor(() => expect(result.current.status).toBe('undetermined'));
+    await act(async () => result.current.requestPermission());
+    expect(result.current.status).toBe('unavailable');
+    expect(result.current.coords).toBeNull();
+  });
+});
+
 describe('permission denied', () => {
   it('reports denied without throwing or fetching a position', async () => {
     mocked.getForegroundPermissionsAsync.mockResolvedValue(permission('denied', false));

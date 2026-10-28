@@ -156,6 +156,10 @@ export const en: Messages = {
       },
     },
     useMyLocation: 'Use my location',
+    deniedInBrowser: {
+      title: 'Location is blocked',
+      body: "Allow location for this site in your browser's address bar, then try again.",
+    },
     openSettings: 'Open Settings',
     title: 'Places',
     emptyTitle: 'No saved places yet',

@@ -49,6 +49,11 @@ async function stateFromPermission(
   permission: Location.LocationPermissionResponse,
 ): Promise<State> {
   const { canAskAgain } = permission;
+  // On the web, a request that failed for another reason than a refusal (no fix, timeout) comes
+  // back as GRANTED but not granted: the position is unavailable, asking again would not help.
+  if (!permission.granted && permission.status === Location.PermissionStatus.GRANTED) {
+    return { ...UNAVAILABLE, canAskAgain };
+  }
   if (!permission.granted) {
     const denied = permission.status === Location.PermissionStatus.DENIED;
     return { status: denied ? 'denied' : 'undetermined', coords: null, canAskAgain };
