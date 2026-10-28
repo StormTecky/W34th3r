@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { useLocale } from '@/lib/use-locale';
 import type { ProviderErrorKind } from '@/providers/weather-provider';
@@ -6,6 +6,7 @@ import { radii, spacing, touch, typography } from '@/theme/tokens';
 import { useTheme } from '@/theme/use-theme';
 
 import { describeError } from './error-messages';
+import { PressableScale } from './PressableScale';
 
 /** Colours to use on a coloured backdrop instead of the app palette. */
 export interface ErrorStatePalette {
@@ -40,19 +41,16 @@ export function ErrorState({ kind, onRetry, palette }: ErrorStateProps) {
         {message}
       </Text>
       {retryable && onRetry ? (
-        <Pressable
+        <PressableScale
           accessibilityRole="button"
           accessibilityLabel={messages.common.tryAgain}
           onPress={onRetry}
-          style={({ pressed }) => [
-            styles.button,
-            { backgroundColor: ink.button, opacity: pressed ? 0.8 : 1 },
-          ]}
+          style={[styles.button, { backgroundColor: ink.button }]}
         >
           <Text style={[typography.bodyStrong, { color: ink.onButton }]}>
             {messages.common.tryAgain}
           </Text>
-        </Pressable>
+        </PressableScale>
       ) : null}
     </View>
   );

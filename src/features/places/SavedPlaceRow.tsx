@@ -1,12 +1,13 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { formatTemperature } from '@/domain/units';
 import { useLocale } from '@/lib/use-locale';
 import { useCachedWeather } from '@/features/current/use-cached-weather';
 import { usePreferences } from '@/features/settings/use-preferences';
-import { spacing, touch, typography } from '@/theme/tokens';
+import { motion, spacing, touch, typography } from '@/theme/tokens';
 import { useTheme } from '@/theme/use-theme';
 import { IconButton } from '@/ui/IconButton';
+import { PressableScale } from '@/ui/PressableScale';
 
 import { placeLabel, placeSubtitle } from './place-label';
 import type { Place } from '@/domain/types';
@@ -79,12 +80,13 @@ export function SavedPlaceRow(props: SavedPlaceRowProps) {
 
   return (
     <View style={styles.row}>
-      <Pressable
+      <PressableScale
         testID="place-row"
         accessibilityRole="button"
         accessibilityLabel={spoken}
         onPress={props.onOpen}
-        style={({ pressed }) => [styles.main, { opacity: pressed ? 0.6 : 1 }]}
+        scaleTo={motion.pressedScaleWide}
+        style={styles.main}
       >
         <View style={styles.names}>
           <Text style={[typography.bodyStrong, { color: colors.text }]}>{name}</Text>
@@ -95,7 +97,7 @@ export function SavedPlaceRow(props: SavedPlaceRowProps) {
         {temperature ? (
           <Text style={[typography.headline, { color: colors.text }]}>{temperature}</Text>
         ) : null}
-      </Pressable>
+      </PressableScale>
       {props.editing && props.place ? <EditControls {...props} name={name} /> : null}
     </View>
   );

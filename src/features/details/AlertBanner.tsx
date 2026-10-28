@@ -1,9 +1,10 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import type { WeatherAlert } from '@/domain/types';
 import { useLocale } from '@/lib/use-locale';
-import { alertColors, radii, spacing, typography } from '@/theme/tokens';
+import { alertColors, motion, radii, spacing, typography } from '@/theme/tokens';
 import { Icon } from '@/ui/Icon';
+import { PressableScale } from '@/ui/PressableScale';
 
 export interface AlertBannerProps {
   /** Sorted most severe first; the first is shown, the rest are counted. */
@@ -22,16 +23,14 @@ export function AlertBanner({ alerts, onPress }: AlertBannerProps) {
   const label = `${severity}: ${top.event}${more > 0 ? `. ${messages.alerts.more(more)}` : ''}`;
 
   return (
-    <Pressable
+    <PressableScale
       testID="alert-banner"
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityHint={messages.alerts.opensFull}
       onPress={onPress}
-      style={({ pressed }) => [
-        styles.banner,
-        { backgroundColor: palette.background, opacity: pressed ? 0.85 : 1 },
-      ]}
+      scaleTo={motion.pressedScaleWide}
+      style={[styles.banner, { backgroundColor: palette.background }]}
     >
       <Icon name="info" color={palette.text} size={22} />
       <View style={styles.text}>
@@ -43,7 +42,7 @@ export function AlertBanner({ alerts, onPress }: AlertBannerProps) {
           {`+${messages.alerts.more(more)}`}
         </Text>
       ) : null}
-    </Pressable>
+    </PressableScale>
   );
 }
 

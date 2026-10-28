@@ -44,6 +44,34 @@ exports[`primary components in dark appearance renders a search result row 1`] =
       accessible={true}
       collapsable={false}
       focusable={true}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "flex": 1,
+            "gap": 2,
+            "justifyContent": "center",
+            "minHeight": 44,
+            "paddingVertical": 8,
+          },
+        ]
+      }
       onBlur={[Function]}
       onClick={[Function]}
       onFocus={[Function]}
@@ -64,6 +92,11 @@ exports[`primary components in dark appearance renders a search result row 1`] =
           },
           {
             "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
           },
         ]
       }
@@ -125,6 +158,37 @@ exports[`primary components in dark appearance renders a search result row 1`] =
       collapsable={false}
       focusable={true}
       hitSlop={4}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          [
+            {
+              "alignItems": "center",
+              "borderRadius": 999,
+              "height": 44,
+              "justifyContent": "center",
+              "width": 44,
+            },
+            false,
+          ],
+        ]
+      }
       onBlur={[Function]}
       onClick={[Function]}
       onFocus={[Function]}
@@ -289,6 +353,38 @@ exports[`primary components in dark appearance renders a segmented control with 
       accessible={true}
       collapsable={false}
       focusable={true}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          [
+            {
+              "alignItems": "center",
+              "borderRadius": 999,
+              "flex": 1,
+              "justifyContent": "center",
+              "minHeight": 44,
+              "paddingHorizontal": 8,
+            },
+            false,
+          ],
+        ]
+      }
       onBlur={[Function]}
       onClick={[Function]}
       onFocus={[Function]}
@@ -309,6 +405,14 @@ exports[`primary components in dark appearance renders a segmented control with 
             "paddingHorizontal": 8,
           },
           false,
+          {
+            "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
+          },
         ]
       }
     >
@@ -352,6 +456,40 @@ exports[`primary components in dark appearance renders a segmented control with 
       accessible={true}
       collapsable={false}
       focusable={true}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          [
+            {
+              "alignItems": "center",
+              "borderRadius": 999,
+              "flex": 1,
+              "justifyContent": "center",
+              "minHeight": 44,
+              "paddingHorizontal": 8,
+            },
+            {
+              "backgroundColor": "#7DB2FF",
+            },
+          ],
+        ]
+      }
       onBlur={[Function]}
       onClick={[Function]}
       onFocus={[Function]}
@@ -373,6 +511,14 @@ exports[`primary components in dark appearance renders a segmented control with 
           },
           {
             "backgroundColor": "#7DB2FF",
+          },
+          {
+            "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
           },
         ]
       }
@@ -482,6 +628,41 @@ exports[`primary components in dark appearance renders the error state 1`] = `
       accessible={true}
       collapsable={false}
       focusable={true}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          [
+            {
+              "alignItems": "center",
+              "borderRadius": 999,
+              "justifyContent": "center",
+              "marginTop": 8,
+              "minHeight": 44,
+              "minWidth": 88,
+              "paddingHorizontal": 24,
+            },
+            {
+              "backgroundColor": "#7DB2FF",
+            },
+          ],
+        ]
+      }
       onBlur={[Function]}
       onClick={[Function]}
       onFocus={[Function]}
@@ -504,7 +685,14 @@ exports[`primary components in dark appearance renders the error state 1`] = `
           },
           {
             "backgroundColor": "#7DB2FF",
+          },
+          {
             "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
           },
         ]
       }
@@ -574,6 +762,34 @@ exports[`primary components in light appearance renders a search result row 1`] 
       accessible={true}
       collapsable={false}
       focusable={true}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          {
+            "flex": 1,
+            "gap": 2,
+            "justifyContent": "center",
+            "minHeight": 44,
+            "paddingVertical": 8,
+          },
+        ]
+      }
       onBlur={[Function]}
       onClick={[Function]}
       onFocus={[Function]}
@@ -594,6 +810,11 @@ exports[`primary components in light appearance renders a search result row 1`] 
           },
           {
             "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
           },
         ]
       }
@@ -655,6 +876,37 @@ exports[`primary components in light appearance renders a search result row 1`] 
       collapsable={false}
       focusable={true}
       hitSlop={4}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          [
+            {
+              "alignItems": "center",
+              "borderRadius": 999,
+              "height": 44,
+              "justifyContent": "center",
+              "width": 44,
+            },
+            false,
+          ],
+        ]
+      }
       onBlur={[Function]}
       onClick={[Function]}
       onFocus={[Function]}
@@ -819,6 +1071,38 @@ exports[`primary components in light appearance renders a segmented control with
       accessible={true}
       collapsable={false}
       focusable={true}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          [
+            {
+              "alignItems": "center",
+              "borderRadius": 999,
+              "flex": 1,
+              "justifyContent": "center",
+              "minHeight": 44,
+              "paddingHorizontal": 8,
+            },
+            false,
+          ],
+        ]
+      }
       onBlur={[Function]}
       onClick={[Function]}
       onFocus={[Function]}
@@ -839,6 +1123,14 @@ exports[`primary components in light appearance renders a segmented control with
             "paddingHorizontal": 8,
           },
           false,
+          {
+            "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
+          },
         ]
       }
     >
@@ -882,6 +1174,40 @@ exports[`primary components in light appearance renders a segmented control with
       accessible={true}
       collapsable={false}
       focusable={true}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          [
+            {
+              "alignItems": "center",
+              "borderRadius": 999,
+              "flex": 1,
+              "justifyContent": "center",
+              "minHeight": 44,
+              "paddingHorizontal": 8,
+            },
+            {
+              "backgroundColor": "#1259C7",
+            },
+          ],
+        ]
+      }
       onBlur={[Function]}
       onClick={[Function]}
       onFocus={[Function]}
@@ -903,6 +1229,14 @@ exports[`primary components in light appearance renders a segmented control with
           },
           {
             "backgroundColor": "#1259C7",
+          },
+          {
+            "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
           },
         ]
       }
@@ -1012,6 +1346,41 @@ exports[`primary components in light appearance renders the error state 1`] = `
       accessible={true}
       collapsable={false}
       focusable={true}
+      jestAnimatedProps={
+        {
+          "value": {},
+        }
+      }
+      jestAnimatedStyle={
+        {
+          "value": {
+            "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
+          },
+        }
+      }
+      jestInlineStyle={
+        [
+          [
+            {
+              "alignItems": "center",
+              "borderRadius": 999,
+              "justifyContent": "center",
+              "marginTop": 8,
+              "minHeight": 44,
+              "minWidth": 88,
+              "paddingHorizontal": 24,
+            },
+            {
+              "backgroundColor": "#1259C7",
+            },
+          ],
+        ]
+      }
       onBlur={[Function]}
       onClick={[Function]}
       onFocus={[Function]}
@@ -1034,7 +1403,14 @@ exports[`primary components in light appearance renders the error state 1`] = `
           },
           {
             "backgroundColor": "#1259C7",
+          },
+          {
             "opacity": 1,
+            "transform": [
+              {
+                "scale": 1,
+              },
+            ],
           },
         ]
       }
