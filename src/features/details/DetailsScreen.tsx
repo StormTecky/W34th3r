@@ -1,7 +1,7 @@
 import { useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useMemo, type ReactNode } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CURRENT_PLACE_ID } from '@/domain/place';
@@ -18,16 +18,67 @@ import { useNowSeconds } from '@/lib/use-now';
 import { ConditionBackground } from '@/theme/ConditionBackground';
 import { getTheme, type WeatherTheme } from '@/theme/theme-engine';
 import { spacing, typography } from '@/theme/tokens';
+import { BounceText } from '@/ui/BounceText';
 import { ErrorState } from '@/ui/ErrorState';
+import type { IconName } from '@/ui/Icon';
 import { ScreenHeader } from '@/ui/ScreenHeader';
 import { Skeleton } from '@/ui/Skeleton';
 
 import { AlertsSection } from './AlertsSection';
-import { buildDetails } from './details-view-model';
+import { buildDetails, type DetailsModel } from './details-view-model';
 import { DetailTile } from './DetailTile';
 import { SunArc } from './SunArc';
 import { UVMeter } from './UVMeter';
 import { WindCompass } from './WindCompass';
+
+interface ValueTileProps {
+  title: string;
+  icon: IconName;
+  label: string;
+  order: number;
+  theme: WeatherTheme;
+}
+
+/** A tile that shows one number, which bounces when it changes. */
+function ValueTile({ title, icon, label, order, theme }: ValueTileProps) {
+  return (
+    <DetailTile title={title} icon={icon} theme={theme} order={order}>
+      <BounceText testID="detail-value" style={[typography.numeral, { color: theme.tile.text }]}>
+        {label}
+      </BounceText>
+    </DetailTile>
+  );
+}
+
+/** Humidity, visibility and pressure: one number per tile. */
+function ValueTiles({ model, theme }: { model: DetailsModel; theme: WeatherTheme }) {
+  const { titles } = useLocale().messages.details;
+  return (
+    <>
+      <ValueTile
+        title={titles.humidity}
+        icon="droplet"
+        label={model.humidity.label}
+        order={2}
+        theme={theme}
+      />
+      <ValueTile
+        title={titles.visibility}
+        icon="eye"
+        label={model.visibility.label}
+        order={3}
+        theme={theme}
+      />
+      <ValueTile
+        title={titles.pressure}
+        icon="gauge"
+        label={model.pressure.label}
+        order={4}
+        theme={theme}
+      />
+    </>
+  );
+}
 
 function Measurements({ snapshot, theme }: { snapshot: WeatherSnapshot; theme: WeatherTheme }) {
   const { preferences } = usePreferences();
@@ -40,26 +91,17 @@ function Measurements({ snapshot, theme }: { snapshot: WeatherSnapshot; theme: W
   );
   const { tile } = theme;
   const ink = { color: tile.text, secondaryColor: tile.textSecondary, accentColor: tile.accent };
-  const value = [typography.numeral, { color: tile.text }];
 
   return (
     <>
-      <DetailTile title={titles.wind} icon="wind" theme={theme}>
+      <DetailTile title={titles.wind} icon="wind" theme={theme} order={0}>
         <WindCompass wind={model.wind} {...ink} />
       </DetailTile>
-      <DetailTile title={titles.uvIndex} icon="sun" theme={theme}>
+      <DetailTile title={titles.uvIndex} icon="sun" theme={theme} order={1}>
         <UVMeter uv={model.uv} {...ink} />
       </DetailTile>
-      <DetailTile title={titles.humidity} icon="droplet" theme={theme}>
-        <Text style={value}>{model.humidity.label}</Text>
-      </DetailTile>
-      <DetailTile title={titles.visibility} icon="eye" theme={theme}>
-        <Text style={value}>{model.visibility.label}</Text>
-      </DetailTile>
-      <DetailTile title={titles.pressure} icon="gauge" theme={theme}>
-        <Text style={value}>{model.pressure.label}</Text>
-      </DetailTile>
-      <DetailTile title={titles.sun} icon="sun" theme={theme} wide>
+      <ValueTiles model={model} theme={theme} />
+      <DetailTile title={titles.sun} icon="sun" theme={theme} order={5} wide>
         <SunArc sun={model.sun} {...ink} />
       </DetailTile>
     </>

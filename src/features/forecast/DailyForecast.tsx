@@ -71,7 +71,7 @@ export function DailyForecast({ rows, theme }: DailyForecastProps) {
   const { messages } = useLocale();
   if (rows.length === 0) return null;
   return (
-    <ForecastCard title={messages.forecast.dailyTitle} icon="calendar" theme={theme}>
+    <ForecastCard title={messages.forecast.dailyTitle} icon="calendar" theme={theme} order={2}>
       {rows.map((row, index) => (
         <DailyRowView key={row.key} row={row} first={index === 0} theme={theme} />
       ))}

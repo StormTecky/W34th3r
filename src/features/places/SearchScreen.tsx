@@ -6,6 +6,7 @@ import type { Place } from '@/domain/types';
 import { useLocale } from '@/lib/use-locale';
 import { radii, spacing, touch, typography } from '@/theme/tokens';
 import { useTheme } from '@/theme/use-theme';
+import { EnterView } from '@/ui/EnterView';
 import { ErrorState } from '@/ui/ErrorState';
 import { IconButton } from '@/ui/IconButton';
 import { ScreenHeader } from '@/ui/ScreenHeader';
@@ -115,15 +116,17 @@ export function SearchScreen() {
       style={[styles.screen, { backgroundColor: colors.background }, padding]}
     >
       <ScreenHeader title={messages.common.search} />
-      <SearchField value={input} onChange={setInput} />
-      <View style={styles.results}>
+      <EnterView>
+        <SearchField value={input} onChange={setInput} />
+      </EnterView>
+      <EnterView order={1} style={styles.results}>
         <Results
           search={search}
           isSaved={places.isSaved}
           onOpen={(place) => void openPlace(place)}
           onToggleSave={(place) => void toggleSave(place)}
         />
-      </View>
+      </EnterView>
     </View>
   );
 }

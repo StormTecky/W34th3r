@@ -18,7 +18,7 @@ export function HourlyForecast({ rows, theme }: HourlyForecastProps) {
   const { messages } = useLocale();
   if (rows.length === 0) return null;
   return (
-    <ForecastCard title={messages.forecast.hourlyTitle} icon="clock" theme={theme}>
+    <ForecastCard title={messages.forecast.hourlyTitle} icon="clock" theme={theme} order={1}>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
