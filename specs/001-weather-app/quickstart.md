@@ -64,7 +64,7 @@ npx expo start         # press i (iOS) or a (Android)
 | 9 | Deny location permission | App opens to search-first state with a gentle prompt to enable location; nothing blank or broken | FR-012 |
 | 10 | Turn on airplane mode after a successful load, relaunch | Last known weather visible in ≤ 1 s with "Updated N min ago" | FR-014, SC-005 |
 | 11 | Force provider errors (invalid key, timeout, 429, malformed JSON) with the fake provider | Each shows a friendly message with retry where meaningful; no crash or blank screen | FR-014, SC-008 |
-| 12 | Enable OS "reduce motion", large text, and a screen reader | Ambient animation off/static; layouts hold at largest text; all controls announced meaningfully | FR-015, SC-006 |
+| 12 | Enable OS "reduce motion", large text, and a screen reader | Ambient animation off/static; no press bounce, entrances, number pops or grabbable temperature (pressed controls only dim) and nothing hidden; layouts hold at largest text; all controls announced meaningfully | FR-015, FR-019, SC-006 |
 
 ## 6. End-to-end flows
 

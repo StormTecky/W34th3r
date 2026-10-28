@@ -93,6 +93,10 @@ All Technical Context unknowns are resolved below. No `NEEDS CLARIFICATION` item
   expo-linear-gradient; effects are disabled or replaced by static art when the OS
   "reduce motion" setting is on. A distinctive bundled typeface (chosen during implementation
   design pass) loads via expo-font with a safe fallback.
+  Interaction motion uses the same library: three under-damped spring configs in the motion
+  tokens (`press`, `enter`, `pop`) drive `PressableScale` (controls and rows), `EnterView`
+  (cards and screen sections, staggered) and `BounceText` (numbers). Springs, not eased timings,
+  because the slight overshoot is what reads as a bounce; all three go still under reduced motion.
 - **Rationale**: "Modern and designed" is the product's differentiator (FR-002, FR-017, SC-004).
   Tokens satisfy the constitution's no-magic-values rule; Reanimated keeps animation on the UI
   thread for 60 fps.
