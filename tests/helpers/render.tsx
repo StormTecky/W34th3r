@@ -39,6 +39,8 @@ export interface RenderWithProvidersOptions {
   queryClient?: QueryClient;
   /** Reuse the stores and providers of an earlier render, e.g. to move between screens. */
   environment?: TestEnvironment;
+  /** Safe-area insets, e.g. a notch on the left or right of a phone on its side. */
+  insets?: Partial<typeof INITIAL_METRICS.insets>;
 }
 
 /** A query client with the app's defaults, but never leaving garbage-collection timers behind. */
@@ -66,10 +68,11 @@ export async function buildTestEnvironment(options: RenderWithProvidersOptions =
   const provider = options.provider ?? fake;
   const queryClient = options.queryClient ?? createTestQueryClient();
   const locale = options.locale ?? DEFAULT_LOCALE;
+  const metrics = { ...INITIAL_METRICS, insets: { ...INITIAL_METRICS.insets, ...options.insets } };
 
   function Wrapper({ children }: { children: ReactNode }) {
     return (
-      <SafeAreaProvider initialMetrics={INITIAL_METRICS}>
+      <SafeAreaProvider initialMetrics={metrics}>
         <QueryClientProvider client={queryClient}>
           <WeatherProviderProvider provider={provider}>
             <PreferencesProvider store={preferencesStore}>

@@ -2,6 +2,8 @@ import mockAsyncStorage from '@react-native-async-storage/async-storage/jest/asy
 
 import { configure } from '@testing-library/react-native';
 
+import { PHONE, setWindowSize } from './tests/helpers/screen-size';
+
 jest.mock('@react-native-async-storage/async-storage', () => mockAsyncStorage);
 
 // Screens draw illustrated scenes, so a render can take longer than the 1 s default under load.
@@ -27,8 +29,10 @@ jest.mock('expo-router', () => {
   };
 });
 
-// Every test starts with empty storage and a clean router so state cannot leak between tests.
+// Every test starts on a phone held upright, with empty storage and a clean router, so state
+// cannot leak between tests. (The default Jest window is 750 points wide, a tablet layout.)
 beforeEach(async () => {
+  setWindowSize(PHONE);
   await mockAsyncStorage.clear();
   const { router } = jest.requireMock('expo-router');
   for (const fn of Object.values(router) as jest.Mock[]) fn.mockClear();
