@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { spacing, typography } from '@/theme/tokens';
 import { useTheme } from '@/theme/use-theme';
 import { getConfig } from '@/config/env';
+import { EnterView } from '@/ui/EnterView';
 import { ScreenHeader } from '@/ui/ScreenHeader';
 
 import { SegmentedControl, type SegmentOption } from './SegmentedControl';
@@ -30,28 +31,38 @@ function unitOptions<T extends string>(
   }));
 }
 
-function Section({ title, children }: { title: string; children: ReactNode }) {
+function Section({
+  title,
+  order,
+  children,
+}: {
+  title: string;
+  order: number;
+  children: ReactNode;
+}) {
   const { colors } = useTheme();
   return (
-    <View style={styles.section}>
+    <EnterView testID="settings-section" order={order} style={styles.section}>
       <Text accessibilityRole="header" style={[typography.headline, { color: colors.text }]}>
         {title}
       </Text>
       {children}
-    </View>
+    </EnterView>
   );
 }
 
 interface ChoiceProps<T extends string> {
   title: string;
+  /** Position on the screen, so the sections come in one after another. */
+  order: number;
   value: T;
   options: SegmentOption<T>[];
   onChange: (value: T) => void;
 }
 
-function Choice<T extends string>({ title, value, options, onChange }: ChoiceProps<T>) {
+function Choice<T extends string>({ title, order, value, options, onChange }: ChoiceProps<T>) {
   return (
-    <Section title={title}>
+    <Section title={title} order={order}>
       <SegmentedControl label={title} value={value} options={options} onChange={onChange} />
     </Section>
   );
@@ -67,24 +78,28 @@ function Choices() {
     <>
       <Choice
         title={sections.temperature}
+        order={0}
         value={p.temperatureUnit}
         options={unitOptions(TEMPERATURE_UNITS, units.temperature)}
         onChange={(temperatureUnit) => void update({ temperatureUnit })}
       />
       <Choice
         title={sections.windSpeed}
+        order={1}
         value={p.windSpeedUnit}
         options={unitOptions(WIND_SPEED_UNITS, units.windSpeed)}
         onChange={(windSpeedUnit) => void update({ windSpeedUnit })}
       />
       <Choice
         title={sections.precipitation}
+        order={2}
         value={p.precipitationUnit}
         options={unitOptions(PRECIPITATION_UNITS, units.precipitation)}
         onChange={(precipitationUnit) => void update({ precipitationUnit })}
       />
       <Choice
         title={sections.appearance}
+        order={3}
         value={p.appearance}
         options={appearanceOptions}
         onChange={(appearance) => void update({ appearance })}

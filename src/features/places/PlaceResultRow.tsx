@@ -1,10 +1,11 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import type { Place } from '@/domain/types';
 import { useLocale } from '@/lib/use-locale';
-import { spacing, touch, typography } from '@/theme/tokens';
+import { motion, spacing, touch, typography } from '@/theme/tokens';
 import { useTheme } from '@/theme/use-theme';
 import { IconButton } from '@/ui/IconButton';
+import { PressableScale } from '@/ui/PressableScale';
 
 import { placeLabel, placeSubtitle } from './place-label';
 
@@ -24,17 +25,18 @@ export function PlaceResultRow({ place, saved, onOpen, onToggleSave }: PlaceResu
 
   return (
     <View style={styles.row}>
-      <Pressable
+      <PressableScale
         accessibilityRole="button"
         accessibilityLabel={label}
         onPress={() => onOpen(place)}
-        style={({ pressed }) => [styles.main, { opacity: pressed ? 0.6 : 1 }]}
+        scaleTo={motion.pressedScaleWide}
+        style={styles.main}
       >
         <Text style={[typography.bodyStrong, { color: colors.text }]}>{place.name}</Text>
         {subtitle ? (
           <Text style={[typography.caption, { color: colors.textSecondary }]}>{subtitle}</Text>
         ) : null}
-      </Pressable>
+      </PressableScale>
       <IconButton
         icon="bookmark"
         filled={saved}

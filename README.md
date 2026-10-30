@@ -148,7 +148,7 @@ Each runtime dependency has one job:
 | `expo`, `expo-router`, `expo-linking`, `expo-constants`, `expo-status-bar`               | App framework, file-based navigation and deep links                     |
 | `expo-location`, `expo-localization`                                                     | Device location (coarse, foreground), language, formats, unit defaults  |
 | `expo-font`, `expo-linear-gradient`                                                      | Bundled typeface (Outfit, SIL OFL) and the sky gradients                |
-| `react-native-reanimated`, `react-native-worklets`                                       | Ambient weather effects on the UI thread                                |
+| `react-native-reanimated`, `react-native-worklets`                                       | Ambient weather effects, springs and entrances on the UI thread         |
 | `react-native-gesture-handler`, `react-native-screens`, `react-native-safe-area-context` | Navigation and layout primitives required by expo-router                |
 | `react-native-svg`                                                                       | Weather and interface icons, compass, sun arc                           |
 | `@tanstack/react-query` (+ persist client and AsyncStorage persister)                    | Caching, the 15-minute refresh rule, and offline last-known data        |

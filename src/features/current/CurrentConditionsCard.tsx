@@ -12,6 +12,8 @@ import { WeatherScene } from '@/theme/scenes/WeatherScene';
 import type { WeatherTheme } from '@/theme/theme-engine';
 import { radii, spacing, textShadow, typography } from '@/theme/tokens';
 import { useFadeOnChange } from '@/theme/use-fade-on-change';
+import { BounceText } from '@/ui/BounceText';
+import { Grabbable } from '@/ui/Grabbable';
 
 export interface CurrentConditionsCardProps {
   placeName: string;
@@ -100,18 +102,20 @@ interface HeadlineProps {
   temperature: (celsius: number) => string;
 }
 
-/** The giant temperature, the conditions and the playful one-liner. */
+/** The giant temperature (which can be grabbed and played with), the conditions and a one-liner. */
 function Headline({ shown, theme, locale, temperature }: HeadlineProps) {
   return (
     <>
-      <Text
-        testID="current-temperature"
-        numberOfLines={1}
-        adjustsFontSizeToFit
-        style={[typography.display, styles.temperature, textShadow, { color: theme.text }]}
-      >
-        {temperature(shown.temperature)}
-      </Text>
+      <Grabbable testID="temperature-grab" style={styles.temperatureArea}>
+        <BounceText
+          testID="current-temperature"
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          style={[typography.display, styles.temperature, textShadow, { color: theme.text }]}
+        >
+          {temperature(shown.temperature)}
+        </BounceText>
+      </Grabbable>
       <Text style={[typography.title, { color: theme.text }]}>{shown.summary}</Text>
       <Text style={[typography.bodyStrong, { color: theme.textSecondary }]}>
         {moodLine(shown.condition, shown.isDay, shown.temperature, locale)}
@@ -161,7 +165,8 @@ export function CurrentConditionsCard({
 const styles = StyleSheet.create({
   container: { alignItems: 'center', gap: spacing.xs, paddingVertical: spacing.lg },
   // The temperature sits over the lower part of the illustration, for a layered look.
-  temperature: { alignSelf: 'stretch', textAlign: 'center', marginTop: -48 },
+  temperatureArea: { alignSelf: 'stretch', marginTop: -48 },
+  temperature: { textAlign: 'center' },
   chips: {
     flexDirection: 'row',
     flexWrap: 'wrap',

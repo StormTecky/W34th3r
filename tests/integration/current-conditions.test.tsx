@@ -1,6 +1,6 @@
 import { act, fireEvent, screen, waitFor } from '@testing-library/react-native';
 import * as Location from 'expo-location';
-import { Linking } from 'react-native';
+import { Linking, Platform } from 'react-native';
 
 import { weatherQueryKey } from '@/data/query-client';
 import { buildSnapshot, type FakeScenario } from '@/providers/fake/scenarios';
@@ -207,6 +207,35 @@ describe('location permission', () => {
     expect(view.fake.calls.getWeather).toBe(0);
     await fireEvent.press(screen.getByRole('button', { name: 'Open Settings' }));
     expect(openSettings).toHaveBeenCalled();
+  });
+
+  describe('in a browser, which has no Settings app to open', () => {
+    beforeEach(() => jest.replaceProperty(Platform, 'OS', 'web'));
+
+    it('explains how to allow location for the site, without offering to open Settings', async () => {
+      deviceInParis('denied');
+      await render({ scenario: 'clear-day' });
+      expect(await screen.findByText('Location is blocked')).toBeTruthy();
+      expect(screen.queryByRole('button', { name: 'Open Settings' })).toBeNull();
+      expect(screen.queryByText(/Settings/)).toBeNull();
+    });
+
+    it('checks again when asked, and shows the weather once the site is allowed', async () => {
+      deviceInParis('denied');
+      await render({ scenario: 'clear-day' });
+      await screen.findByText('Location is blocked');
+
+      mocked.getForegroundPermissionsAsync.mockResolvedValue(permission('granted'));
+      await fireEvent.press(screen.getByRole('button', { name: 'Try again' }));
+      await expectHero('21°');
+    });
+
+    it('still offers to search for a place', async () => {
+      deviceInParis('denied');
+      await render();
+      await screen.findByText('Location is blocked');
+      expect(screen.getByRole('button', { name: 'Search for a place' })).toBeTruthy();
+    });
   });
 
   it('offers to search for a place when location is denied', async () => {

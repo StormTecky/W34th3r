@@ -1,10 +1,11 @@
-import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Modal, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { WeatherAlert } from '@/domain/types';
 import { useLocale } from '@/lib/use-locale';
 import { alertColors, radii, spacing, touch, typography } from '@/theme/tokens';
 import { useTheme } from '@/theme/use-theme';
+import { PressableScale } from '@/ui/PressableScale';
 
 import { alertPeriodLabel } from './details-view-model';
 
@@ -67,7 +68,7 @@ export function AlertSheet({ visible, alerts, onClose, ...place }: AlertSheetPro
             <AlertEntry key={alert.id} alert={alert} {...place} />
           ))}
         </ScrollView>
-        <Pressable
+        <PressableScale
           accessibilityRole="button"
           accessibilityLabel={messages.common.close}
           onPress={onClose}
@@ -79,7 +80,7 @@ export function AlertSheet({ visible, alerts, onClose, ...place }: AlertSheetPro
           <Text style={[typography.bodyStrong, { color: colors.onAccent }]}>
             {messages.common.close}
           </Text>
-        </Pressable>
+        </PressableScale>
       </View>
     </Modal>
   );

@@ -1,5 +1,14 @@
 import { contrastRatio } from '@/theme/contrast';
-import { alertColors, colors, motion, radii, spacing, touch, typography } from '@/theme/tokens';
+import {
+  alertColors,
+  colors,
+  motion,
+  opacity,
+  radii,
+  spacing,
+  touch,
+  typography,
+} from '@/theme/tokens';
 
 describe('contrastRatio', () => {
   it('is 21 for black on white and 1 for identical colours', () => {
@@ -70,6 +79,34 @@ describe('scales', () => {
   it('orders motion durations fast < base < slow', () => {
     expect(motion.fast).toBeLessThan(motion.base);
     expect(motion.base).toBeLessThan(motion.slow);
+  });
+
+  it('defines springs that bounce a little but settle: under-damped, not wobbly', () => {
+    for (const { damping, stiffness, mass } of Object.values(motion.spring)) {
+      const dampingRatio = damping / (2 * Math.sqrt(stiffness * mass));
+      expect(dampingRatio).toBeGreaterThan(0.3);
+      expect(dampingRatio).toBeLessThan(0.8);
+    }
+  });
+
+  it('keeps the bounce subtle: presses shrink slightly, popped numbers grow slightly', () => {
+    expect(motion.pressedScale).toBeGreaterThan(0.9);
+    expect(motion.pressedScale).toBeLessThan(1);
+    // Wide rows and banners move more points for the same ratio, so they shrink less.
+    expect(motion.pressedScaleWide).toBeGreaterThan(motion.pressedScale);
+    expect(motion.pressedScaleWide).toBeLessThan(1);
+    expect(motion.popScale).toBeGreaterThan(1);
+    expect(motion.popScale).toBeLessThanOrEqual(1.1);
+  });
+
+  it('tilts a grabbed element gently: a long drag turns it, a nudge barely does', () => {
+    expect(motion.grabTilt).toBeGreaterThan(0);
+    expect(motion.grabTilt * 100).toBeLessThanOrEqual(30);
+  });
+
+  it('keeps a pressed control readable and a disabled one visibly dimmer', () => {
+    expect(opacity.pressed).toBeGreaterThan(opacity.disabled);
+    expect(opacity.pressed).toBeLessThan(1);
   });
 
   it('requires touch targets of at least 44 points', () => {

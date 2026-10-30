@@ -3,20 +3,27 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import type { WeatherTheme } from '@/theme/theme-engine';
 import { elevation, radii, spacing, typography } from '@/theme/tokens';
+import { EnterView } from '@/ui/EnterView';
 import { Icon, type IconName } from '@/ui/Icon';
 
 export interface ForecastCardProps {
   title: string;
   icon: IconName;
   theme: WeatherTheme;
+  /** Position among the cards on the screen, so they come in one after another. */
+  order: number;
   children: ReactNode;
 }
 
 /** A solid, rounded tile with a bold uppercase heading, shared by the forecast sections. */
-export function ForecastCard({ title, icon, theme, children }: ForecastCardProps) {
+export function ForecastCard({ title, icon, theme, order, children }: ForecastCardProps) {
   const { tile } = theme;
   return (
-    <View style={[styles.card, elevation.low, { backgroundColor: tile.background }]}>
+    <EnterView
+      testID="forecast-card"
+      order={order}
+      style={[styles.card, elevation.low, { backgroundColor: tile.background }]}
+    >
       <View style={styles.heading}>
         <Icon name={icon} size={16} color={tile.accent} />
         <Text
@@ -27,7 +34,7 @@ export function ForecastCard({ title, icon, theme, children }: ForecastCardProps
         </Text>
       </View>
       {children}
-    </View>
+    </EnterView>
   );
 }
 

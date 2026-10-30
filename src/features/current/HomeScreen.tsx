@@ -21,6 +21,7 @@ import { ConditionBackground } from '@/theme/ConditionBackground';
 import { getTheme, type WeatherTheme } from '@/theme/theme-engine';
 import { spacing, typography } from '@/theme/tokens';
 import { describeError } from '@/ui/error-messages';
+import { EnterView } from '@/ui/EnterView';
 import { ErrorState } from '@/ui/ErrorState';
 import { IconButton } from '@/ui/IconButton';
 import { Skeleton } from '@/ui/Skeleton';
@@ -188,12 +189,14 @@ function WeatherBody({ placeName, weather, theme, moment }: BodyProps) {
   }
   return (
     <View>
-      <CurrentConditionsCard
-        placeName={placeName}
-        current={snapshot.current}
-        theme={theme}
-        moment={moment}
-      />
+      <EnterView testID="enter-current">
+        <CurrentConditionsCard
+          placeName={placeName}
+          current={snapshot.current}
+          theme={theme}
+          moment={moment}
+        />
+      </EnterView>
       <UpdatedAgoLabel
         fetchedAt={snapshot.fetchedAt}
         always={weather.errorKind !== null}

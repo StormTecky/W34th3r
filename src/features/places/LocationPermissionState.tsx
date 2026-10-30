@@ -1,9 +1,10 @@
-import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Linking, Platform, StyleSheet, Text, View } from 'react-native';
 
-import type { LocationPromptVariant } from '@/domain/messages';
+import type { LocationPromptVariant, Messages } from '@/domain/messages';
 import { useLocale } from '@/lib/use-locale';
 import { radii, spacing, touch, typography } from '@/theme/tokens';
 import type { WeatherTheme } from '@/theme/theme-engine';
+import { PressableScale } from '@/ui/PressableScale';
 
 export type LocationPermissionVariant = LocationPromptVariant;
 
@@ -27,35 +28,52 @@ interface ActionProps {
 
 function Action({ label, onPress, theme, primary = false }: ActionProps) {
   return (
-    <Pressable
+    <PressableScale
       accessibilityRole="button"
       accessibilityLabel={label}
       onPress={onPress}
-      style={({ pressed }) => [
+      style={[
         styles.button,
         primary
           ? { backgroundColor: theme.tile.background }
           : { borderWidth: 1.5, borderColor: theme.text },
-        { opacity: pressed ? 0.75 : 1 },
       ]}
     >
       <Text style={[typography.bodyStrong, { color: primary ? theme.tile.text : theme.text }]}>
         {label}
       </Text>
-    </Pressable>
+    </PressableScale>
   );
 }
 
+/**
+ * The main way out of each state. A browser has no Settings app to open (react-native-web has no
+ * `Linking.openSettings`), so there the fix is the site permission, then trying again.
+ */
+function primaryAction(
+  { variant, onAllow, onRetry }: LocationPermissionStateProps,
+  inBrowser: boolean,
+  messages: Messages,
+): { label: string; onPress: () => void } | null {
+  if (variant === 'undetermined') {
+    return onAllow ? { label: messages.places.useMyLocation, onPress: onAllow } : null;
+  }
+  if (variant === 'denied' && !inBrowser) {
+    return { label: messages.places.openSettings, onPress: () => void Linking.openSettings() };
+  }
+  return onRetry ? { label: messages.common.tryAgain, onPress: onRetry } : null;
+}
+
 /** Explains why location is needed, and what to do when it is off or unavailable. */
-export function LocationPermissionState({
-  variant,
-  theme,
-  onAllow,
-  onRetry,
-  onSearch,
-}: LocationPermissionStateProps) {
+export function LocationPermissionState(props: LocationPermissionStateProps) {
+  const { variant, theme, onSearch } = props;
   const { messages } = useLocale();
-  const { title, body } = messages.places.permission[variant];
+  const inBrowser = Platform.OS === 'web';
+  const { title, body } =
+    variant === 'denied' && inBrowser
+      ? messages.places.deniedInBrowser
+      : messages.places.permission[variant];
+  const primary = primaryAction(props, inBrowser, messages);
 
   return (
     <View style={styles.container}>
@@ -67,20 +85,7 @@ export function LocationPermissionState({
       </Text>
       <Text style={[typography.body, styles.centered, { color: theme.textSecondary }]}>{body}</Text>
       <View style={styles.actions}>
-        {variant === 'undetermined' && onAllow ? (
-          <Action primary label={messages.places.useMyLocation} onPress={onAllow} theme={theme} />
-        ) : null}
-        {variant === 'denied' ? (
-          <Action
-            primary
-            label={messages.places.openSettings}
-            onPress={() => void Linking.openSettings()}
-            theme={theme}
-          />
-        ) : null}
-        {variant === 'unavailable' && onRetry ? (
-          <Action primary label={messages.common.tryAgain} onPress={onRetry} theme={theme} />
-        ) : null}
+        {primary ? <Action primary {...primary} theme={theme} /> : null}
         {onSearch ? (
           <Action label={messages.common.searchForAPlace} onPress={onSearch} theme={theme} />
         ) : null}

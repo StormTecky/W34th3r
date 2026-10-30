@@ -112,13 +112,40 @@ export const elevation = {
   },
 } as const;
 
-/** Durations in milliseconds. */
+/** Durations in milliseconds, spring physics and the sizes of the small movements built on them. */
 export const motion = {
   fast: 150,
   base: 280,
   slow: 700,
   /** Cross-fade when the weather theme changes. */
   theme: 900,
+  /** All under-damped, so they overshoot a little and settle: a subtle bounce. */
+  spring: {
+    /** Quick and tight, for a control reacting to a finger. */
+    press: { damping: 15, stiffness: 420, mass: 0.5 },
+    /** Soft, for content arriving. */
+    enter: { damping: 15, stiffness: 160, mass: 0.9 },
+    /** Livelier, for a number that just changed. */
+    pop: { damping: 9, stiffness: 320, mass: 0.5 },
+  },
+  /** Scale a control shrinks to while a finger is on it. */
+  pressedScale: 0.95,
+  /** The same for wide things such as list rows and banners, where 5% would be a lot of points. */
+  pressedScaleWide: 0.98,
+  /** Scale a number kicks up to when its value changes, before springing back to 1. */
+  popScale: 1.06,
+  /** Degrees a grabbed element turns per point dragged sideways. */
+  grabTilt: 0.15,
+  /** How far below its place content starts when it enters, in points. */
+  enterRise: 24,
+  /** Extra wait per item when several enter together, in milliseconds. */
+  enterStagger: 70,
+} as const;
+
+/** Opacity of controls that are being pressed or are unavailable. */
+export const opacity = {
+  pressed: 0.7,
+  disabled: 0.35,
 } as const;
 
 export const touch = {

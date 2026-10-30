@@ -195,6 +195,14 @@ selected units, and is presented with a visual aid.
   for each language rather than translated word for word. Condition names and place names are
   requested from the provider in the same language. Text that comes from the weather service itself
   (official alert headlines and descriptions) is shown as received.
+- **FR-019**: Interaction MUST feel alive without getting in the way. Buttons, list rows and
+  banners MUST shrink slightly under the finger and spring back with a small bounce; cards and
+  screen sections MUST rise into place with a soft bounce, one after another, when a screen opens;
+  key numbers (the hero temperature and the detail readings) MUST pop slightly when their value
+  changes. The hero temperature MUST be something to play with: grabbed with a finger or the mouse
+  it follows the pointer in every direction, lifts slightly and turns with the sideways drag, and
+  springs back home with a bounce when let go. When the OS asks for reduced motion nothing moves (a pressed control only dims) and no
+  content is ever left hidden.
 
 ### Key Entities
 

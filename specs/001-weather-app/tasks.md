@@ -320,6 +320,18 @@ a visual aid; an active alert is flagged and its full text opens on demand (spec
 - [X] T135 [P] Localize the iOS location permission prompt (`locales/fr.json`, `expo.locales` in `app.json`) with a config test; document how to add a language in `README.md`
 - [ ] T136 Check on an iOS and an Android device or simulator set to French (and to a language that is not translated): permission prompt text, 24-hour clock, decimal comma, no-break spaces, nothing clipped at large text sizes. Maestro flows in `tests/e2e/` assert English text and need an English device
 
+### Spring animations (FR-019)
+
+- [X] T137 [P] Add the `spring` configs, `pressedScale`, `pressedScaleWide`, `popScale`, `enterRise` and `enterStagger` to `motion` and the `opacity` tokens in `src/theme/tokens.ts`; test that every spring is under-damped but settles and that the scales stay subtle (`tests/unit/theme/tokens.test.ts`)
+- [X] T138 [P] Write and pass `tests/unit/ui/PressableScale.test.tsx`, `EnterView.test.tsx` and `BounceText.test.tsx` (with `tests/helpers/motion.ts` to read Reanimated's style under fake timers): press shrinks and dims then springs back past 1, entrances rise with overshoot and wait their turn, a changed number pops and settles, nothing scales or hides under reduced motion; implement `src/ui/PressableScale.tsx`, `EnterView.tsx` and `BounceText.tsx`
+- [X] T139 Write and pass `tests/integration/motion.test.tsx`, then use the components: `PressableScale` in every button, row and banner (`IconButton`, `ErrorState`, `SegmentedControl`, `SavedPlaceRow`, `PlaceResultRow`, `LocationPermissionState`, `AlertBanner`, `AlertSheet`, Places), `EnterView` for the Home hero and forecast cards, Details tiles, Settings sections and the Places and Search bodies, `BounceText` for the hero temperature and the Details readings; update the `appearance` snapshots (additions only)
+- [ ] T140 Check on an iOS and an Android device or simulator that the springs feel subtle at 60 fps (a long Places list, scrubbing the time-travel bar with the hero temperature popping) and that turning on "reduce motion" while the app runs stills them
+- [X] T142 Write and pass `tests/unit/ui/Grabbable.test.tsx` and extend `tests/integration/motion.test.tsx`: grabbing follows the pointer, lifts by `popScale`, turns by `motion.grabTilt` degrees per point sideways, keeps hold over the scroll view, springs back with overshoot on release or termination, and cannot be grabbed under reduced motion; implement `src/ui/Grabbable.tsx` with React Native's responder system (as `ScrubBar` does) and wrap the hero temperature in it
+
+### Fix: location on the web (FR-012)
+
+- [X] T141 Write and pass tests (`current-conditions.test.tsx`, `LocationPermissionState.test.tsx`, `use-device-location.test.tsx`) and fix: in a browser the denied state no longer offers "Open Settings" (react-native-web has no `Linking.openSettings`, so pressing it crashed); it explains how to allow the site and offers "Try again" and search. A web permission request that fails without a refusal (expo-location returns GRANTED but not granted) now reads as unavailable instead of asking again
+
 ---
 
 ## Dependencies & Execution Order
