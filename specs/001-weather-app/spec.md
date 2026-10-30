@@ -195,6 +195,12 @@ selected units, and is presented with a visual aid.
   for each language rather than translated word for word. Condition names and place names are
   requested from the provider in the same language. Text that comes from the weather service itself
   (official alert headlines and descriptions) is shown as received.
+- **FR-020**: Every screen MUST turn with the device and make good use of larger screens. From a
+  window 600 points wide (tablets, and phones on their side), Home puts the current conditions
+  beside the alerts and forecast, the illustration shrinking so the temperature fits under it on a
+  short screen, and Details shows three tiles per row. Weather screens stop growing at 1080 points
+  and Saved places, Search and Settings at 640 points, centred. Content and controls stay clear of
+  notches and rounded corners on every side.
 
 ### Key Entities
 

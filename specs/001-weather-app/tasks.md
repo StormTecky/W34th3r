@@ -320,6 +320,13 @@ a visual aid; an active alert is flagged and its full text opens on demand (spec
 - [X] T135 [P] Localize the iOS location permission prompt (`locales/fr.json`, `expo.locales` in `app.json`) with a config test; document how to add a language in `README.md`
 - [ ] T136 Check on an iOS and an Android device or simulator set to French (and to a language that is not translated): permission prompt text, 24-hour clock, decimal comma, no-break spaces, nothing clipped at large text sizes. Maestro flows in `tests/e2e/` assert English text and need an English device
 
+### Tablet and landscape layouts (FR-020)
+
+- [X] T143 [P] Write and pass `tests/unit/theme/layout.test.ts` and `tests/unit/config/app-orientation.test.ts`: the wide breakpoint, the illustration size per window, `orientation: "default"`; implement `layout` tokens and `src/theme/layout.ts` (`layoutFor`, `useLayout`, `sidePadding`)
+- [X] T144 Start every test on a phone held upright (`tests/helpers/screen-size.ts`, `jest.setup.ts`) and let `renderWithProviders` take safe-area `insets`
+- [X] T145 Write and pass `tests/integration/layouts.test.tsx`: Home in two columns, Details three tiles a row, plain screens in a readable column (`src/ui/PlainScreen.tsx`), content clear of side insets
+- [ ] T146 Check on an iPad and a phone simulator in both orientations (quickstart scenario 13); only a web build has been checked so far
+
 ---
 
 ## Dependencies & Execution Order

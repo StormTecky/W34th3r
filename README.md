@@ -16,6 +16,7 @@ as an alternative.
 - **Details**: wind, UV index, humidity, visibility, pressure, sunrise and sunset, and official alerts.
 - **Yours**: choose units (temperature, wind, precipitation) and light, dark, or system appearance.
 - **In your language**: English or French, following the device: words, dates, times, numbers and the playful weather lines.
+- **Any screen, any way up**: on a tablet or a phone on its side, the conditions sit beside the forecast, details show three tiles a row, and lists keep a readable width.
 - **Dependable**: when the network fails it shows the last known weather with its age, never a blank screen.
 
 The product spec, plan, and task list live in [`specs/001-weather-app/`](specs/001-weather-app/).
