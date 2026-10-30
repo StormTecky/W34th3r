@@ -65,6 +65,7 @@ npx expo start         # press i (iOS) or a (Android)
 | 10 | Turn on airplane mode after a successful load, relaunch | Last known weather visible in ≤ 1 s with "Updated N min ago" | FR-014, SC-005 |
 | 11 | Force provider errors (invalid key, timeout, 429, malformed JSON) with the fake provider | Each shows a friendly message with retry where meaningful; no crash or blank screen | FR-014, SC-008 |
 | 12 | Enable OS "reduce motion", large text, and a screen reader | Ambient animation off/static; layouts hold at largest text; all controls announced meaningfully | FR-015, SC-006 |
+| 13 | Turn a phone on its side, then open each screen on a tablet in both orientations | Home shows the conditions beside the forecast with the temperature visible; Details shows three tiles a row; lists and settings stay centred at a readable width; nothing under the notch or the time-travel bar out of reach | FR-020 |
 
 ## 6. End-to-end flows
 

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import type { Messages } from '@/domain/messages';
@@ -8,6 +8,7 @@ import { formatPercent, formatTemperature } from '@/domain/units';
 import type { Moment } from '@/features/forecast/scrub';
 import { usePreferences } from '@/features/settings/use-preferences';
 import { useLocale } from '@/lib/use-locale';
+import { useLayout } from '@/theme/layout';
 import { WeatherScene } from '@/theme/scenes/WeatherScene';
 import type { WeatherTheme } from '@/theme/theme-engine';
 import { radii, spacing, textShadow, typography } from '@/theme/tokens';
@@ -21,7 +22,6 @@ export interface CurrentConditionsCardProps {
   moment?: Moment | null;
 }
 
-const MAX_SCENE_WIDTH = 320;
 /** Chances below this are not worth a chip. */
 const MIN_CHIP_PRECIP = 10;
 
@@ -132,14 +132,13 @@ export function CurrentConditionsCard({
 }: CurrentConditionsCardProps) {
   const { preferences } = usePreferences();
   const { locale, messages } = useLocale();
-  const { width } = useWindowDimensions();
   const unit = preferences.temperatureUnit;
   const shown = shownFor(current, moment);
   // While travelling in time the numbers change constantly; only dip the opacity for live updates.
   const fade = useFadeOnChange(
     moment ? 'time-travel' : `${current.observedAt}|${current.temperature}|${current.summary}`,
   );
-  const sceneSize = Math.min(MAX_SCENE_WIDTH, width - spacing.xl * 2);
+  const { sceneSize } = useLayout();
   const temperature = (celsius: number) => formatTemperature(celsius, unit);
 
   return (

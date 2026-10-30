@@ -4,7 +4,7 @@
     "slug": "w34th3r",
     "scheme": "w34th3r",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,

@@ -16,8 +16,9 @@ import { usePreferences } from '@/features/settings/use-preferences';
 import { useLocale } from '@/lib/use-locale';
 import { useNowSeconds } from '@/lib/use-now';
 import { ConditionBackground } from '@/theme/ConditionBackground';
+import { sidePadding } from '@/theme/layout';
 import { getTheme, type WeatherTheme } from '@/theme/theme-engine';
-import { spacing, typography } from '@/theme/tokens';
+import { layout, spacing, typography } from '@/theme/tokens';
 import { ErrorState } from '@/ui/ErrorState';
 import { ScreenHeader } from '@/ui/ScreenHeader';
 import { Skeleton } from '@/ui/Skeleton';
@@ -82,9 +83,14 @@ function DetailsFrame({ title, weather, children }: FrameProps) {
     <ConditionBackground condition={current?.condition ?? 'unknown'} isDay={current?.isDay ?? true}>
       <StatusBar style={theme.statusBar} />
       <ScrollView
+        testID="details-scroll"
         contentContainerStyle={[
           styles.content,
-          { paddingTop: insets.top, paddingBottom: insets.bottom + spacing.xl },
+          {
+            paddingTop: insets.top,
+            paddingBottom: insets.bottom + spacing.xl,
+            ...sidePadding(insets, spacing.lg),
+          },
         ]}
       >
         <ScreenHeader title={title} color={theme.text} />
@@ -158,6 +164,6 @@ export function DetailsScreen() {
 }
 
 const styles = StyleSheet.create({
-  content: { paddingHorizontal: spacing.lg, gap: spacing.md },
+  content: { gap: spacing.md, width: '100%', maxWidth: layout.maxWidth, alignSelf: 'center' },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md },
 });

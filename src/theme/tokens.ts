@@ -121,6 +121,20 @@ export const motion = {
   theme: 900,
 } as const;
 
+/** Screen sizes and widths, in points, for tablets and phones on their side. */
+export const layout = {
+  /** From this window width on, content sits side by side: tablets and phones in landscape. */
+  wideFrom: 600,
+  /** Weather screens never stretch wider than this on large tablets. */
+  maxWidth: 1080,
+  /** Lists and settings stay this narrow so rows do not stretch across a tablet. */
+  readableWidth: 640,
+  /** Largest weather illustration on Home. */
+  maxScene: 320,
+  /** Share of the window height the illustration may take, leaving room for the temperature. */
+  sceneHeightShare: 0.45,
+} as const;
+
 export const touch = {
   /** Minimum interactive target, in points. */
   minTarget: 44,

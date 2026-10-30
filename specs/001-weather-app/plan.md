@@ -35,7 +35,7 @@ snapshot, a11y queries); recorded OpenWeather fixtures + zod schema checks for c
 Maestro for end-to-end flows; ESLint (incl. react-native-a11y rules) + Prettier + `tsc --noEmit`
 
 **Target Platform**: iOS and Android phones (Expo-supported OS versions at scaffold time), layout
-adapts to tablets. Web is not targeted in v1.
+adapts to tablets and landscape (FR-020). Web is not targeted in v1.
 
 **Project Type**: mobile-app (single Expo project at repository root; no backend in v1)
 
