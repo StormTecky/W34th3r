@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { spacing, typography } from '@/theme/tokens';
 import { useTheme } from '@/theme/use-theme';
 import { getConfig } from '@/config/env';
+import { PlainScreen } from '@/ui/PlainScreen';
 import { ScreenHeader } from '@/ui/ScreenHeader';
 
 import { SegmentedControl, type SegmentOption } from './SegmentedControl';
@@ -111,14 +111,9 @@ function Attribution() {
 export function SettingsScreen() {
   const { colors } = useTheme();
   const { messages } = useLocale();
-  const insets = useSafeAreaInsets();
-  const padding = { paddingTop: insets.top, paddingBottom: insets.bottom };
 
   return (
-    <View
-      testID="settings-screen"
-      style={[styles.screen, { backgroundColor: colors.background }, padding]}
-    >
+    <PlainScreen testID="settings-screen">
       <ScreenHeader title={messages.common.settings} />
       <ScrollView contentContainerStyle={styles.content}>
         <Choices />
@@ -127,12 +122,11 @@ export function SettingsScreen() {
         </Text>
         <Attribution />
       </ScrollView>
-    </View>
+    </PlainScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, paddingHorizontal: spacing.lg },
   content: { gap: spacing.xl, paddingVertical: spacing.lg },
   section: { gap: spacing.md },
 });

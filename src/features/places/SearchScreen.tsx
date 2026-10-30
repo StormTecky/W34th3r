@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { Place } from '@/domain/types';
 import { useLocale } from '@/lib/use-locale';
@@ -8,6 +7,7 @@ import { radii, spacing, touch, typography } from '@/theme/tokens';
 import { useTheme } from '@/theme/use-theme';
 import { ErrorState } from '@/ui/ErrorState';
 import { IconButton } from '@/ui/IconButton';
+import { PlainScreen } from '@/ui/PlainScreen';
 import { ScreenHeader } from '@/ui/ScreenHeader';
 
 import { PlaceResultRow } from './PlaceResultRow';
@@ -97,9 +97,7 @@ function SearchField({ value, onChange }: { value: string; onChange: (text: stri
 
 /** Search for a place by name; open a result or save it for later. */
 export function SearchScreen() {
-  const { colors } = useTheme();
   const { messages } = useLocale();
-  const insets = useSafeAreaInsets();
   const [input, setInput] = useState('');
   const search = usePlaceSearch(input);
   const places = usePlaces();
@@ -107,13 +105,9 @@ export function SearchScreen() {
 
   const toggleSave = (place: Place) =>
     places.isSaved(place.id) ? places.remove(place.id) : places.add(place);
-  const padding = { paddingTop: insets.top, paddingBottom: insets.bottom };
 
   return (
-    <View
-      testID="search-screen"
-      style={[styles.screen, { backgroundColor: colors.background }, padding]}
-    >
+    <PlainScreen testID="search-screen">
       <ScreenHeader title={messages.common.search} />
       <SearchField value={input} onChange={setInput} />
       <View style={styles.results}>
@@ -124,12 +118,11 @@ export function SearchScreen() {
           onToggleSave={(place) => void toggleSave(place)}
         />
       </View>
-    </View>
+    </PlainScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, paddingHorizontal: spacing.lg },
   field: {
     flexDirection: 'row',
     alignItems: 'center',

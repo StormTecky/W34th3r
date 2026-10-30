@@ -5,7 +5,7 @@ import { RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CURRENT_PLACE_ID } from '@/domain/place';
-import type { Place } from '@/domain/types';
+import type { Place, WeatherSnapshot } from '@/domain/types';
 import { ForecastSections } from '@/features/forecast/ForecastSections';
 import { ScrubBar } from '@/features/forecast/ScrubBar';
 import type { Moment } from '@/features/forecast/scrub';
@@ -18,8 +18,9 @@ import { usePlaces } from '@/features/places/use-places';
 import { usePreferences } from '@/features/settings/use-preferences';
 import { useLocale } from '@/lib/use-locale';
 import { ConditionBackground } from '@/theme/ConditionBackground';
+import { sidePadding, useLayout } from '@/theme/layout';
 import { getTheme, type WeatherTheme } from '@/theme/theme-engine';
-import { spacing, typography } from '@/theme/tokens';
+import { layout, spacing, typography } from '@/theme/tokens';
 import { describeError } from '@/ui/error-messages';
 import { ErrorState } from '@/ui/ErrorState';
 import { IconButton } from '@/ui/IconButton';
@@ -136,13 +137,17 @@ function HomeFrame({ weather, detailsId, onRefresh, moment, scrubber, children }
   return (
     <ConditionBackground condition={shown?.condition ?? 'unknown'} isDay={shown?.isDay ?? true}>
       <StatusBar style={theme.statusBar} />
-      <View style={{ paddingTop: insets.top, paddingHorizontal: spacing.sm }}>
+      <View
+        testID="home-nav"
+        style={{ paddingTop: insets.top, ...sidePadding(insets, spacing.sm) }}
+      >
         <NavigationBar theme={theme} detailsId={detailsId} />
       </View>
       <ScrollView
         testID="home-scroll"
         contentContainerStyle={[
           styles.content,
+          sidePadding(insets, spacing.lg),
           { paddingBottom: insets.bottom + (scrubber ? SCRUBBER_SPACE : spacing.xl) },
         ]}
         refreshControl={
@@ -151,15 +156,23 @@ function HomeFrame({ weather, detailsId, onRefresh, moment, scrubber, children }
       >
         {children(theme)}
       </ScrollView>
-      {scrubber ? (
-        <View
-          pointerEvents="box-none"
-          style={[styles.scrubber, { bottom: insets.bottom + spacing.md }]}
-        >
-          {scrubber(theme)}
-        </View>
-      ) : null}
+      {scrubber ? <PinnedToBottom>{scrubber(theme)}</PinnedToBottom> : null}
     </ConditionBackground>
+  );
+}
+
+/** Holds the time-travel bar above the bottom edge, clear of notches and the home indicator. */
+function PinnedToBottom({ children }: { children: ReactNode }) {
+  const insets = useSafeAreaInsets();
+  const edges = {
+    bottom: insets.bottom + spacing.md,
+    left: insets.left + spacing.lg,
+    right: insets.right + spacing.lg,
+  };
+  return (
+    <View testID="home-scrubber" pointerEvents="box-none" style={[styles.scrubber, edges]}>
+      {children}
+    </View>
   );
 }
 
@@ -170,24 +183,13 @@ interface BodyProps {
   moment?: Moment | null;
 }
 
-/** Loading, error, or the weather itself for one place. */
-function WeatherBody({ placeName, weather, theme, moment }: BodyProps) {
+type HeroProps = BodyProps & { snapshot: WeatherSnapshot };
+
+/** The current conditions, how old they are, and why they could not be refreshed. */
+function Hero({ placeName, snapshot, weather, theme, moment }: HeroProps) {
   const { locale } = useLocale();
-  const snapshot = weather.data;
-  if (!snapshot) {
-    if (weather.errorKind) {
-      return (
-        <ErrorState
-          kind={weather.errorKind}
-          onRetry={weather.refetch}
-          palette={skyPalette(theme)}
-        />
-      );
-    }
-    return <LoadingState color={`${theme.text}26`} />;
-  }
   return (
-    <View>
+    <>
       <CurrentConditionsCard
         placeName={placeName}
         current={snapshot.current}
@@ -204,8 +206,44 @@ function WeatherBody({ placeName, weather, theme, moment }: BodyProps) {
           {describeError(weather.errorKind, locale).title}
         </Text>
       ) : null}
-      <AlertsSection snapshot={snapshot} />
-      <ForecastSections snapshot={snapshot} theme={theme} />
+    </>
+  );
+}
+
+/**
+ * Loading, error, or the weather itself for one place: the conditions above the forecast, or
+ * beside it on a tablet or a phone on its side.
+ */
+function WeatherBody({ placeName, weather, theme, moment }: BodyProps) {
+  const { wide } = useLayout();
+  const snapshot = weather.data;
+  if (!snapshot) {
+    if (weather.errorKind) {
+      return (
+        <ErrorState
+          kind={weather.errorKind}
+          onRetry={weather.refetch}
+          palette={skyPalette(theme)}
+        />
+      );
+    }
+    return <LoadingState color={`${theme.text}26`} />;
+  }
+  return (
+    <View testID="home-columns" style={wide ? styles.columns : undefined}>
+      <View testID="home-hero" style={wide ? styles.column : undefined}>
+        <Hero
+          placeName={placeName}
+          snapshot={snapshot}
+          weather={weather}
+          theme={theme}
+          moment={moment}
+        />
+      </View>
+      <View testID="home-forecast" style={wide ? styles.column : undefined}>
+        <AlertsSection snapshot={snapshot} />
+        <ForecastSections snapshot={snapshot} theme={theme} />
+      </View>
     </View>
   );
 }
@@ -315,8 +353,10 @@ export function HomeScreen() {
 const styles = StyleSheet.create({
   nav: { flexDirection: 'row', justifyContent: 'space-between' },
   navGroup: { flexDirection: 'row', gap: spacing.sm },
-  scrubber: { position: 'absolute', left: spacing.lg, right: spacing.lg },
-  content: { flexGrow: 1, paddingHorizontal: spacing.lg },
+  scrubber: { position: 'absolute' },
+  content: { flexGrow: 1, width: '100%', maxWidth: layout.maxWidth, alignSelf: 'center' },
+  columns: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.xl },
+  column: { flex: 1 },
   loading: { alignItems: 'center', gap: spacing.lg, paddingTop: spacing.xxxl },
   notice: { textAlign: 'center', marginTop: spacing.xs },
 });

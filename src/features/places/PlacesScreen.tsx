@@ -1,12 +1,12 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { Place } from '@/domain/types';
 import { useLocale } from '@/lib/use-locale';
 import { radii, spacing, touch, typography } from '@/theme/tokens';
 import { useTheme } from '@/theme/use-theme';
+import { PlainScreen } from '@/ui/PlainScreen';
 import { ScreenHeader } from '@/ui/ScreenHeader';
 
 import { SavedPlaceRow } from './SavedPlaceRow';
@@ -97,21 +97,15 @@ function ListRow({ entry, index, count, editing, places, onOpen }: ListRowProps)
 
 /** Saved places, with the current location pinned first and an editing mode for order/removal. */
 export function PlacesScreen() {
-  const { colors } = useTheme();
-  const insets = useSafeAreaInsets();
   const router = useRouter();
   const places = usePlaces();
   const openPlace = useOpenPlace();
   const [editing, setEditing] = useState(false);
 
   const data: Entry[] = [null, ...places.places];
-  const padding = { paddingTop: insets.top, paddingBottom: insets.bottom };
 
   return (
-    <View
-      testID="places-screen"
-      style={[styles.screen, { backgroundColor: colors.background }, padding]}
-    >
+    <PlainScreen testID="places-screen">
       <PlacesHeader
         canEdit={places.places.length > 0}
         editing={editing}
@@ -135,12 +129,11 @@ export function PlacesScreen() {
           <Footer empty={places.places.length === 0} onSearch={() => router.push('/search')} />
         }
       />
-    </View>
+    </PlainScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, paddingHorizontal: spacing.lg },
   textButton: {
     minHeight: touch.minTarget,
     justifyContent: 'center',
